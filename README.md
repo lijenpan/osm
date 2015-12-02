@@ -30,8 +30,8 @@ sudo passwd [username]
 <pre><code>sudo -u postgres psql
 \c gis
 CREATE EXTENSION postgis;
-ALTER TABLE geometry_columns OWNER TO username;
-ALTER TABLE spatial_ref_sys OWNER TO username;
+ALTER TABLE geometry_columns OWNER TO [username];
+ALTER TABLE spatial_ref_sys OWNER TO [username];
 \q
 </code></pre>
 
@@ -49,7 +49,10 @@ sudo make install</code></pre>
 ### Install Mapnik library
 Next, we need to install the Mapnik library. Mapnik is used to render the OpenStreetMap data into the tiles used for an OpenLayers web map.
 
-Install Haffbuzz:
+#### Optional steps if you are installing Mapnik 3.0.9
+Default Ubuntu distro does not come with latest harfbuzz or boost libraries, which are required for Mapnik 3.0.9.
+
+##### Install Haffbuzz 1.1.2
 <pre><code>wget http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-1.1.2.tar.bz2
 tar xf harfbuzz-1.1.2.tar.bz2
 cd harfbuzz-1.1.2
@@ -57,7 +60,7 @@ cd harfbuzz-1.1.2
 sudo ldconfig
 </code></pre>
 
-Install boost 1.59:
+##### Install boost 1.59
 <pre><code>http://downloads.sourceforge.net/boost/boost_1_59_0.tar.bz2
 tar xf boost_1_59_0.tar.bz2
 cd boost_1_59_0
@@ -68,10 +71,146 @@ sed -e '1 i#ifndef Q_MOC_RUN' \
 ./b2 stage threading=multi link=shared
 </code></pre>
 
-Build the Mapnik library from source:
+#### Build the Mapnik library from source
+You would want to download 2.3.x branch.
 <pre><code>git clone git://github.com/mapnik/mapnik
 cd maplink
 ./configure
 make && sudo make install
 </code></pre>
+
+### Install mod_tile and renderd
+Compile the mod_tile source code:
+<pre><code>git clone git://github.com/openstreetmap/mod_tile.git
+cd mod_tile
+./autogen.sh
+./configure
+make
+sudo make install
+sudo make install-mod_tile
+sudo ldconfig
+</code></pre>
+
+### Stylesheet configuration
+To begin with, we need to download both the OSM Bright stylesheet, and also the additional data resources it uses (for coastlines and the like).
+<pre><code>mkdir -p /usr/local/share/maps/style
+cd /usr/local/share/maps/style
+wget https://github.com/mapbox/osm-bright/archive/master.zip
+wget http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip
+wget http://data.openstreetmapdata.com/land-polygons-split-3857.zip
+wget http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_populated_places_simple.zip
+</code></pre>
+
+We then move the downloaded data into the osm-bright-master project directory:
+<pre><code>unzip '*.zip'
+mkdir osm-bright-master/shp
+mv land-polygons-split-3857 osm-bright-master/shp/
+mv simplified-land-polygons-complete-3857 osm-bright-master/shp/
+mv ne_10m_populated_places_simple osm-bright-master/shp/
+</code></pre>
+
+To improve performance, we create index files for the larger shapefiles:
+<pre><code>cd osm-bright-master/shp/land-polygons-split-3857
+shapeindex land_polygons.shp
+cd ../simplified-land-polygons-complete-3857/
+shapeindex simplified_land_polygons.shp
+cd ..</code></pre>
+
+#### Configuring OSM Bright
+The OSM Bright stylesheet now needs to be adjusted to include the location of our data files. Edit the file osm-bright/osm-bright.osm2pgsql.mml in your favourite text editor, for example:
+<pre><code>vim osm-bright/osm-bright.osm2pgsql.mml</code></pre>
+
+Find the lines with URLs pointing to shapefiles (ending .zip) and replace each one with these appropriate pairs of lines:
+<pre><code>"file": "/usr/local/share/maps/style/osm-bright-master/shp/land-polygons-split-3857/land_polygons.shp", 
+"type": "shape"</code></pre>
+<pre><code>"file": "/usr/local/share/maps/style/osm-bright-master/shp/simplified-land-polygons-complete-3857/simplified_land_polygons.shp", 
+"type": "shape",</code></pre>
+<pre><code>"file": "/usr/local/share/maps/style/osm-bright-master/shp/ne_10m_populated_places_simple/ne_10m_populated_places_simple.shp", 
+"type": "shape"</code></pre>
+
+Note that we are also adding “type”: “shape” to each one.
+
+Finally, in the section dealing with “ne_places”, replace the “srs” and “srs-name” lines with this one line:
+<pre><code>"srs": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"</code></pre>
+
+#### Compiling the stylesheet
+We now have a fully working CartoCSS stylesheet. Before Mapnik can use it, we need to compile it into XML using the command-line carto compiler. First of all, we use OSM Bright’s own preprocessor, which we need to edit for our setup:
+<pre><code>cp configure.py.sample configure.py
+vim configure.py
+</code></pre>
+
+Change the config line pointing to ~/Documents/Mapbox/project to /usr/local/share/maps/style instead, and change dbname from osm to gis. Save and exit.
+
+Run the pre-processor and then carto:
+<pre><code>./make.py
+cd ../OSMBright/
+carto project.mml > OSMBright.xml
+</code></pre>
+
+You now have a Mapnik XML stylesheet at /usr/local/share/maps/style/OSMBright/OSMBright.xml.
+
+### Setting up your webserver
+Next we need to plug renderd and mod_tile into the Apache webserver, ready to receive tile requests.
+
+#### Configure renderd
+Change the the renderd settings by editing the /usr/local/etc/renderd.conf and change the following five lines, uncommenting (removing the ‘;’) when required. They are found in the [renderd], [mapnik] and [default] sections.
+
+<pre><code>socketname=/var/run/renderd/renderd.sock
+plugins_dir=/usr/local/lib/mapnik/input
+font_dir=/usr/share/fonts/truetype/ttf-dejavu
+XML=/usr/local/share/maps/style/OSMBright/OSMBright.xml
+HOST=localhost</code></pre>
+
+Create the files required for the mod_tile system to run (remember to change username to your user’s name):
+<pre><code>sudo mkdir /var/run/renderd
+sudo chown [username] /var/run/renderd
+sudo mkdir /var/lib/mod_tile
+sudo chown [username] /var/lib/mod_tile</code></pre>
+
+#### Configure mod_tile
+Next, we need to tell the Apache web server about our new mod_tile installation.
+Using your favourite text editor, create the file /etc/apache2/conf-available/mod_tile.conf and add one line:
+<pre><code>LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so</code></pre>
+
+Apache’s default website configuration file needs to be modified to include mod_tile settings. Modify the file /etc/apache2/sites-available/000-default.conf to include the following lines immediately after the admin e-mail address line:
+<pre><code>LoadTileConfigFile /usr/local/etc/renderd.conf
+ModTileRenderdSocketName /var/run/renderd/renderd.sock
+# Timeout before giving up for a tile to be rendered
+ModTileRequestTimeout 0
+# Timeout before giving up for a tile to be rendered that is otherwise missing
+ModTileMissingRequestTimeout 30</code></pre>
+
+Tell Apache that you have added the new module, and restart it:
+<pre><code>a2enconf mod_tile
+service apache2 reload</code></pre>
+
+### Tuning your system
+A tile server can put a lot of load on hard- and software. The default settings may therefore not be appropriate and a significant improvement can potentially be achieved through tuning various parameters.
+
+#### Tuning postgresql
+The default configuration for PostgreSQL 9.3 needs to be tuned for the amount of data you are about to add to it. Edit the file /etc/postgresql/9.3/main/postgresql.conf and make the following changes:
+<pre><code>shared_buffers = 128MB
+checkpoint_segments = 20
+maintenance_work_mem = 256MB
+autovacuum = off</code></pre>
+
+These changes require a kernel configuration change, which needs to be applied every time that the computer is rebooted. As root, edit /etc/sysctl.conf and add these lines near the top after the other “kernel” definitions:
+<pre><code># Increase kernel shared memory segments - needed for large databases
+kernel.shmmax=268435456</code></pre>
+
+Reboot your computer. Run this:
+<pre><code>sudo sysctl kernel.shmmax</code></pre>
+
+and verify that it displays as 268435456.
+
+### Loading data into your server
+Get the latest OpenStreetMap data
+Retrieve a piece of OpenStreetMap data in PBF format from http://planet.openstreetmap.org/.
+If you need the entire planet file, you can do it by issuing the following command:
+<pre><code>mkdir /usr/local/share/maps/planet
+cd /usr/local/share/maps/planet
+wget http://planet.openstreetmap.org/pbf/planet-latest.osm.pbf</code></pre>
+
+Since the whole planet is at least 18GB when compressed, there are links to smaller country or state sized extracts on that page. However, many people will only need one country or city; you can download PBF files for these (‘extracts’) from download.geofabrik.de. We would recommend that you test with smaller areas, and only move up to the full planet when you are confident your setup is working.
+
 
