@@ -245,5 +245,35 @@ Processing: Node(37210k 383.6k/s) Way(0k 0.00k/s) Relation(0 0.00/s)</code></pre
 ### Testing your tileserver
 Now that everything is installed, set-up and loaded, you can start up your tile server and hopefully everything is working. We’ll run it interactively first, just to make sure that everything’s working properly. Remember to substitute your username again:
 <pre><code>sudo mkdir /var/run/renderd
-sudo chown username /var/run/renderd
-sudo -u username renderd -f -c /usr/local/etc/renderd.conf</code></pre>
+sudo chown [username] /var/run/renderd
+sudo -u [username] renderd -f -c /usr/local/etc/renderd.conf</code></pre>
+
+and on a different session:
+<code>service apache2 reload</code>
+
+If any FATAL errors occur you’ll need to double-check any edits that you made earlier.
+If not, try and browse to http://yourserveraddress/osm_tiles/0/0/0.png to see if a small picture of the world appears. The actual map tiles are being created as “metatiles” beneath the folder /var/lib/mod_tile.
+
+### Setting it to run automatically
+If it ran successfully, you can stop the interactive renderd process and configure it to run automatically at machine startup as a daemon.
+<pre><code>sudo cp  ~/src/mod_tile/debian/renderd.init /etc/init.d/renderd
+sudo chmod u+x /etc/init.d/renderd</code></pre>
+
+Edit the /etc/init.d/renderd file as root – you’ll need to make a couple of changes to the DAEMON and DAEMON_ARGS lines so that they read:
+<pre><code>DAEMON=/usr/local/bin/$NAME
+DAEMON_ARGS="-c /usr/local/etc/renderd.conf"</code></pre>
+
+Also, you’ll need to change references to www-data so that they match your username – change “www-data” to what you changed “username” to in other files.
+
+You should now be able to start mapnik by doing the following:
+<code>sudo /etc/init.d/renderd start</code>
+
+and stop it:
+<code>sudo /etc/init.d/renderd stop</code>
+
+Logging information is now written to /var/log/syslog instead of to the terminal.
+
+Next, add a link to the interactive startup directory so that it starts automatically:
+<code>sudo ln -s /etc/init.d/renderd /etc/rc2.d/S20renderd</code>
+
+and then restart your server, browse to http://yourserveraddress/osm_tiles/0/0/0.png and everything should be working! You can also go to the page http://yourserveraddress/mod_tile which should give you some stats about your tile server.
