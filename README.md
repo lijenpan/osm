@@ -204,7 +204,7 @@ Reboot your computer. Run this:
 and verify that it displays as 268435456.
 
 ### Loading data into your server
-Get the latest OpenStreetMap data
+#### Get the latest OpenStreetMap data
 Retrieve a piece of OpenStreetMap data in PBF format from http://planet.openstreetmap.org/.
 If you need the entire planet file, you can do it by issuing the following command:
 <pre><code>mkdir /usr/local/share/maps/planet
@@ -213,4 +213,37 @@ wget http://planet.openstreetmap.org/pbf/planet-latest.osm.pbf</code></pre>
 
 Since the whole planet is at least 18GB when compressed, there are links to smaller country or state sized extracts on that page. However, many people will only need one country or city; you can download PBF files for these (‘extracts’) from download.geofabrik.de. We would recommend that you test with smaller areas, and only move up to the full planet when you are confident your setup is working.
 
+#### Importing data into the database
+With the conversion tool compiled and the database prepared, the following command will insert the OpenStreetMap data you downloaded earlier into the database. This step is very disk I/O intensive; the full planet will take anywhere from 10 hours on a fast server with SSDs to several days depending on the speed of the computer performing the import. For smaller extracts the import time is much faster accordingly, and you may need to experiment with different -C values to fit within your machine’s available memory.
 
+You will need to run this command as a known Postgres user.
+<pre><code>osm2pgsql --slim -d gis -C 1600 --number-process 3 -S /usr/local/share/osm2pgsql/default.style planet -latest.osm.pbf</code></pre>
+
+You will see status report as it imports map tiles.
+<pre><code>osm2pgsql SVN version 0.89.0-dev (64 bit id space)
+
+Using built-in tag processing pipeline
+Using projection SRS 900913 (Spherical Mercator)
+Setting up table: planet_osm_point
+Setting up table: planet_osm_line
+Setting up table: planet_osm_polygon
+Setting up table: planet_osm_roads
+Allocating memory for dense node cache
+Allocating dense node cache in one big chunk
+Allocating memory for sparse node cache
+Sharing dense sparse
+Node-cache: cache=1600MB, maxblocks=25600*65536, allocation method=11
+Mid: pgsql, scale=100 cache=1600
+Setting up table: planet_osm_nodes
+Setting up table: planet_osm_ways
+Setting up table: planet_osm_rels
+
+Reading in file: planet-latest.osm.pbf
+Using PBF parser.
+Processing: Node(37210k 383.6k/s) Way(0k 0.00k/s) Relation(0 0.00/s)</code></pre>
+
+### Testing your tileserver
+Now that everything is installed, set-up and loaded, you can start up your tile server and hopefully everything is working. We’ll run it interactively first, just to make sure that everything’s working properly. Remember to substitute your username again:
+<pre><code>sudo mkdir /var/run/renderd
+sudo chown username /var/run/renderd
+sudo -u username renderd -f -c /usr/local/etc/renderd.conf</code></pre>
