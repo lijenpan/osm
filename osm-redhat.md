@@ -2,6 +2,8 @@
 <pre><code>sudo yum groupinstall 'Development Tools'</code></pre>
 <pre><code>sudo yum install pycairo.x86_64 pycairo-devel.x86_64 geos geos-devel protobuf-devel</code></pre>
 
+Download, compile and install proj.4: https://github.com/OSGeo/proj.4/tree/4.9.2
+
 # Install PostgreSQL Server and PostGIS
 <code>sudo yum install postgis2_94.x86_64 postgis2_94-docs.x86_64 postgis2_94-client.x86_64 postgis2_94-utils.x86_64 pgrouting_94.x86_64</code>
 
