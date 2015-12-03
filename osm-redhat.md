@@ -1,6 +1,6 @@
 # Preparations
-<code>sudo yum groupinstall 'Development Tools'</code>
-<code>sudo yum install pycairo.x86_64 pycairo-devel.x86_64 geos geos-devel protobuf-devel</code>
+<pre><code>sudo yum groupinstall 'Development Tools'</code></pre>
+<pre><code>sudo yum install pycairo.x86_64 pycairo-devel.x86_64 geos geos-devel protobuf-devel</code></pre>
 
 # Install PostgreSQL Server and PostGIS
 <code>sudo yum install postgis2_94.x86_64 postgis2_94-docs.x86_64 postgis2_94-client.x86_64 postgis2_94-utils.x86_64 pgrouting_94.x86_64</code>
@@ -23,3 +23,5 @@ Add pg_config to the PATH:
 cd maplink
 ./configure
 make && sudo make install</code></pre>
+
+# Install OpenStreetMap
