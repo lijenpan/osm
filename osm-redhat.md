@@ -1,6 +1,6 @@
 # Preparations
 <pre><code>sudo yum groupinstall 'Development Tools'</code></pre>
-<pre><code>sudo yum -y install bzip2-devel libpng-devel libtiff-devel zlib-devel libjpeg-devel libxml2-devel python-setuptools proj-devel proj proj-epsg proj-nad freetype-devel freetype libicu-devel libicu gdal-devel gdal sqlite-devel sqlite libcurl-devel libcurl cairo-devel cairo pycairo-devel pycairo geos geos-devel protobuf-devel cmake</code></pre>
+<pre><code>sudo yum -y install bzip2-devel libpng-devel libtiff-devel zlib-devel libjpeg-devel libxml2-devel python-setuptools proj-devel proj proj-epsg proj-nad freetype-devel freetype libicu-devel libicu gdal-devel gdal sqlite-devel sqlite libcurl-devel libcurl cairo-devel cairo pycairo-devel pycairo geos geos-devel protobuf-devel protobuf-c-devel lua-devel cmake</code></pre>
 
 # Install PostgreSQL Server and PostGIS
 <code>sudo yum install postgresql94-server postgis2_94 postgis2_94-docs postgis2_94-client postgis2_94-utils pgrouting_94</code>
