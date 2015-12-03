@@ -74,7 +74,7 @@ sed -e '1 i#ifndef Q_MOC_RUN' \
 #### Build the Mapnik library from source
 You would want to download 2.3.x branch.
 <pre><code>git clone git://github.com/mapnik/mapnik
-cd maplink
+cd mapnik
 ./configure
 make && sudo make install
 </code></pre>
