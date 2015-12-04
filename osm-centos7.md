@@ -154,7 +154,7 @@ You now have a Mapnik XML stylesheet at /usr/local/share/maps/style/OSMBright/OS
 # Setting up your webserver
 Next we need to plug renderd and mod_tile into the Apache webserver, ready to receive tile requests.
 ## Configure renderd
-Change the the renderd settings by editing the /usr/local/etc/renderd.conf and change the following five lines, uncommenting (removing the ‘;’) when required. They are found in the [renderd], [mapnik] and [default] sections.
+Change the the renderd settings by editing the /etc/renderd.conf and change the following five lines, uncommenting (removing the ‘;’) when required. They are found in the [renderd], [mapnik] and [default] sections.
 <pre><code>socketname=/var/run/renderd/renderd.sock
 plugins_dir=/usr/local/lib/mapnik/input
 font_dir=/usr/share/fonts/truetype/ttf-dejavu
