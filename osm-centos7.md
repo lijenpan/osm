@@ -58,8 +58,55 @@ cd maplink
 make && sudo make install</code></pre>
 
 If you experience odd configuration errors, try cleaning the configure caches: <code>make clean</code>
+
+# Install Geos C++ Library
+<pre><code>wget http://download.osgeo.org/geos/geos-3.5.0.tar.bz2
+tar xf geos-3.5.0.tar.bz2
+cd geos-3.5.0
+./configure && make && sudo make install
+ldconfig
+</code></pre>
+
+Add the following line to /etc/ld.so.conf if it doesn't already exist: <code>/usr/local/lib</code>
+
+# Install osm2pgsql
+osm2pgsql is under active development and is best compiled from source:
+<pre><code>git clone git://github.com/openstreetmap/osm2pgsql.git
+cd osm2pgsql
+mkdir build && cd build && cmake ..
+make
+sudo make install
+export PATH=$PATH:/usr/local/bin</code></pre>
+
+# Install mod_tile and renderd
+Compile the mod_tile source code:
+<pre><code>git clone git://github.com/openstreetmap/osm2pgsql.git
+cd osm2pgsql
+mkdir build && cd build && cmake ..
+make
+sudo make install
+export PATH=$PATH:/usr/local/bin</code></pre>
+git clone git://github.com/openstreetmap/mod_tile.git
+cd mod_tile
+./autogen.sh
+./configure
+make
+sudo make install
+sudo make install-mod_tile
+sudo ldconfig</code></pre>
+
+# Stylesheet configuration
+To begin with, we need to download both the OSM Bright stylesheet, and also the additional data resources it uses (for coastlines and the like).
+<pre><code>mkdir -p /usr/local/share/maps/style
+cd /usr/local/share/maps/style
+wget https://github.com/mapbox/osm-bright/archive/master.zip
+wget http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip
+wget http://data.openstreetmapdata.com/land-polygons-split-3857.zip
+wget http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_populated_places_simple.zip</code></pre>
+
 # Install OpenStreetMap
-<pre><code>su - postgres
+<pre><code>useradd -c "OpenStreetMap System User" -m osm
+su - postgres
 export PATH=$PATH:/usr/pgsql-9.4/bin
 psql gis < /usr/pgsql-9.4/share/contrib/postgis-2.1/postgis.sql
 psql gis < /usr/pgsql-9.4/share/contrib/postgis-2.1/spatial_ref_sys.sql
@@ -67,4 +114,6 @@ createuser osm -W # No to all questions
 createuser apache -W # No to all questions
 echo "grant all on geometry_columns to apache;" | psql gis
 echo "grant all on spatial_ref_sys to apache;" | psql gis
-exit</code></pre>
+exit
+export PATH=$PATH:/usr/pgsql-9.4/bin
+</code></pre>
