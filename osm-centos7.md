@@ -51,10 +51,10 @@ sudo ldconfig</code></pre>
 Add pg_config to the PATH:
 <code>export PATH=$PATH:/usr/pgsql-9.4/bin</code>
 
-### Clone, Build, and Install Mapnik 2.2.0
+### Clone, Build, and Install Mapnik 2.3.x
 <pre><code>git clone git://github.com/mapnik/mapnik
 cd maplink
-./configure ICU_INCLUDES=/usr/local/include ICU_LIBS=/usr/local/include
+./configure
 make && sudo make install</code></pre>
 
 If you experience odd configuration errors, try cleaning the configure caches: <code>make clean</code>
