@@ -151,6 +151,40 @@ carto project.mml > OSMBright.xml
 
 You now have a Mapnik XML stylesheet at /usr/local/share/maps/style/OSMBright/OSMBright.xml.
 
+# Setting up your webserver
+Next we need to plug renderd and mod_tile into the Apache webserver, ready to receive tile requests.
+## Configure renderd
+Change the the renderd settings by editing the /usr/local/etc/renderd.conf and change the following five lines, uncommenting (removing the ‘;’) when required. They are found in the [renderd], [mapnik] and [default] sections.
+<pre><code>socketname=/var/run/renderd/renderd.sock
+plugins_dir=/usr/local/lib/mapnik/input
+font_dir=/usr/share/fonts/truetype/ttf-dejavu
+XML=/usr/local/share/maps/style/OSMBright/OSMBright.xml
+HOST=localhost</code></pre>
+
+## Configure mod_tile
+Next, we need to tell the Apache web server about our new mod_tile installation. Using your favourite text editor, create the file /etc/apache2/conf-available/mod_tile.conf and add one line:
+<pre><code>LoadModule tile_module /etc/httpd/modules/mod_tile.so</code></pre>
+
+Apache’s default website configuration file needs to be modified to include mod_tile settings. Modify the file /etc/apache2/sites-available/000-default.conf to include the following lines immediately after the admin e-mail address line:
+
+# Tuning your system
+A tile server can put a lot of load on hard- and software. The default settings may therefore not be appropriate and a significant improvement can potentially be achieved through tuning various parameters.
+
+## Tuning postgresql
+The default configuration for PostgreSQL 9.4 needs to be tuned for the amount of data you are about to add to it. Edit the file /var/lib/pgsql/9.4/data/postgresql.conf and make the following changes:
+<pre><code>shared_buffers = 128MB
+checkpoint_segments = 20
+maintenance_work_mem = 256MB
+autovacuum = off</code></pre>
+
+These changes require a kernel configuration change, which needs to be applied every time that the computer is rebooted. As root, edit /etc/sysctl.conf and add these lines near the top after the other “kernel” definitions:
+<pre><code># Increase kernel shared memory segments - needed for large databases
+kernel.shmmax=268435456</code></pre>
+
+Reboot your computer. Run this:
+<code>sudo sysctl kernel.shmmax</code>
+and verify that it displays as 268435456.
+
 # Install OpenStreetMap
 <pre><code>useradd -c "OpenStreetMap System User" -m osm
 su - postgres
@@ -164,3 +198,52 @@ echo "grant all on spatial_ref_sys to apache;" | psql gis
 exit
 export PATH=$PATH:/usr/pgsql-9.4/bin
 </code></pre>
+
+## Get the latest OpenStreetMap data
+Retrieve a piece of OpenStreetMap data in PBF format from http://planet.openstreetmap.org/. If you need the entire planet file, you can do it by issuing the following command:
+<pre><code>mkdir /usr/local/share/maps/planet
+cd /usr/local/share/maps/planet
+wget http://planet.openstreetmap.org/pbf/planet-latest.osm.pbf</code></pre>
+
+Since the whole planet is at least 18GB when compressed, there are links to smaller country or state sized extracts on that page. However, many people will only need one country or city; you can download PBF files for these (‘extracts’) from download.geofabrik.de. We would recommend that you test with smaller areas, and only move up to the full planet when you are confident your setup is working.
+
+## Importing data into the database
+With the conversion tool compiled and the database prepared, the following command will insert the OpenStreetMap data you downloaded earlier into the database. This step is very disk I/O intensive; the full planet will take anywhere from 10 hours on a fast server with SSDs to several days depending on the speed of the computer performing the import. For smaller extracts the import time is much faster accordingly, and you may need to experiment with different -C values to fit within your machine’s available memory.
+
+You will need to run this command as a known Postgres user.
+<pre><code>osm2pgsql --slim -d gis -C 1600 --number-process 3 -S /usr/local/share/osm2pgsql/default.style planet -latest.osm.pbf</code></pre>
+
+You will see status report as it imports map tiles.
+<pre><code>osm2pgsql SVN version 0.89.0-dev (64 bit id space)
+
+Using built-in tag processing pipeline
+Using projection SRS 900913 (Spherical Mercator)
+Setting up table: planet_osm_point
+Setting up table: planet_osm_line
+Setting up table: planet_osm_polygon
+Setting up table: planet_osm_roads
+Allocating memory for dense node cache
+Allocating dense node cache in one big chunk
+Allocating memory for sparse node cache
+Sharing dense sparse
+Node-cache: cache=1600MB, maxblocks=25600*65536, allocation method=11
+Mid: pgsql, scale=100 cache=1600
+Setting up table: planet_osm_nodes
+Setting up table: planet_osm_ways
+Setting up table: planet_osm_rels
+
+Reading in file: planet-latest.osm.pbf
+Using PBF parser.
+Processing: Node(37210k 383.6k/s) Way(0k 0.00k/s) Relation(0 0.00/s)</code></pre>
+
+## Testing your tileserver
+Now that everything is installed, set-up and loaded, you can start up your tile server and hopefully everything is working. We’ll run it interactively first, just to make sure that everything’s working properly. Remember to substitute your username again:
+<pre><code>sudo mkdir /var/run/renderd
+sudo chown [username] /var/run/renderd
+sudo -u [username] renderd -f -c /usr/local/etc/renderd.conf</code></pre>
+
+and on a different session:
+<code>service apache2 reload</code>
+
+If any FATAL errors occur you’ll need to double-check any edits that you made earlier.
+If not, try and browse to http://yourserveraddress/osm_tiles/0/0/0.png to see if a small picture of the world appears. The actual map tiles are being created as “metatiles” beneath the folder /var/lib/mod_tile.
