@@ -162,7 +162,7 @@ XML=/usr/local/share/maps/style/OSMBright/OSMBright.xml
 HOST=localhost</code></pre>
 
 ## Configure mod_tile
-Next, we need to tell the Apache web server about our new mod_tile installation. Using your favourite text editor, create the file /etc/apache2/conf-available/mod_tile.conf and add one line:
+Next, we need to tell the Apache web server about our new mod_tile installation. Using your favourite text editor, create the file /etc/httpd/conf.d/mod_tile.conf and add one line:
 <pre><code>LoadModule tile_module /etc/httpd/modules/mod_tile.so</code></pre>
 
 Apache’s default website configuration file needs to be modified to include mod_tile settings. Modify the file /etc/apache2/sites-available/000-default.conf to include the following lines immediately after the admin e-mail address line:
