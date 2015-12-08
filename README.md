@@ -51,12 +51,18 @@ Download shapefiles manually:
 * http://data.openstreetmapdata.com/land-polygons-split-3857.zip
 * http://planet.openstreetmap.org/historical-shapefiles/world_boundaries-spherical.tgz
 * http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_boundary_lines_land.zip
+* http://data.openstreetmapdata.com/antarctica-icesheet-polygons-3857.zip
+* http://data.openstreetmapdata.com/antarctica-icesheet-outlines-3857.zip
 
 Put these shapefiles at <code>/usr/local/share/maps/style/data</code>.
 
 To improve performance, we create index files for the larger shapefiles:
-<pre><code>shapeindex path/to/land-polygons-split-3857/land_polygons.shp
-shapeindex path/to/simplified-land-polygons-complete-3857/simplified_land_polygons.shp</code></pre>
+<pre><code>shapeindex --shape_files \
+/usr/local/share/maps/style/data/land-polygons-split-3857/land_polygons.shp \
+/usr/local/share/maps/style/data/simplified-land-polygons-complete-3857/simplified_land_polygons.shp \
+/usr/local/share/maps/style/data/antarctica-icesheet-polygons-3857/icesheet_polygons.shp \
+/usr/local/share/maps/style/data/antarctica-icesheet-outlines-3857/icesheet_outlines.shp \
+/usr/local/share/maps/style/data/ne_110m_admin_0_boundary_lines_land/ne_110m_admin_0_boundary_lines_land.shp</code></pre>
 
 Import your desired PBF of OSM data: <code>sudo -u [username] osm2pgsql -d gis path/to/data.osm.pbf --style path/to/openstreetmap-carto.style</code>
 
