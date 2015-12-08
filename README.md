@@ -7,7 +7,7 @@ It consists of 5 main components: Mod_tile, renderd, mapnik, osm2pgsql and a pos
 
 In order to build these components, a variety of dependencies need to be installed first:
 
-<pre><code>sudo apt-get install libboost-all-dev subversion git-core tar unzip wget bzip2 build-essential autoconf libtool libxml2-dev libgeos-dev libgeos++-dev libpq-dev libbz2-dev libproj-dev munin-node munin libprotobuf-c0-dev protobuf-c-compiler libfreetype6-dev libpng12-dev libtiff4-dev libicu-dev libgdal-dev libcairo-dev libcairomm-1.0-dev apache2 apache2-dev libagg-dev ttf-unifont libgeotiff-epsg node-carto libharfbuzz</code></pre>
+<pre><code>sudo apt-get install libboost-all-dev subversion git-core tar unzip wget bzip2 build-essential autoconf libtool libxml2-dev libgeos-dev libgeos++-dev libpq-dev libbz2-dev libproj-dev munin-node munin libprotobuf-c0-dev protobuf-c-compiler libfreetype6-dev libpng12-dev libtiff4-dev libicu-dev libgdal-dev libcairo-dev libcairomm-1.0-dev apache2 apache2-dev libagg-dev ttf-unifont libgeotiff-epsg node-carto</code></pre>
 
 ### Installing postgresql / postgis
 
