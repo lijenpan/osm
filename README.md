@@ -155,7 +155,7 @@ ModTileRequestTimeout 0
 ModTileMissingRequestTimeout 30</code></pre>
 
 Tell Apache that you have added the new module, and restart it:
-<pre><code>a2enconf mod_tile
+<pre><code>sudo a2enconf mod_tile
 service apache2 reload</code></pre>
 
 ### Tuning your system
