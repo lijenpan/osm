@@ -204,9 +204,7 @@ Processing: Node(37210k 383.6k/s) Way(0k 0.00k/s) Relation(0 0.00/s)</code></pre
 
 ### Testing your tileserver
 Now that everything is installed, set-up and loaded, you can start up your tile server and hopefully everything is working. We’ll run it interactively first, just to make sure that everything’s working properly. Remember to substitute your username again:
-<pre><code>sudo mkdir /var/run/renderd
-sudo chown [username] /var/run/renderd
-sudo -u [username] renderd -f -c /usr/local/etc/renderd.conf</code></pre>
+<pre><code>sudo -u [username] renderd -f -c /etc/renderd.conf</code></pre>
 
 and on a different session:
 <code>service apache2 reload</code>
