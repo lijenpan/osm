@@ -47,10 +47,10 @@ make
 sudo make install</code></pre>
 
 Download shapefiles manually:
-http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip
-http://data.openstreetmapdata.com/land-polygons-split-3857.zip
-http://planet.openstreetmap.org/historical-shapefiles/world_boundaries-spherical.tgz
-http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_boundary_lines_land.zip
+* http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip
+* http://data.openstreetmapdata.com/land-polygons-split-3857.zip
+* http://planet.openstreetmap.org/historical-shapefiles/world_boundaries-spherical.tgz
+* http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_boundary_lines_land.zip
 
 Put these shapefiles at <code>path/to/openstreetmap-carto/data</code>.
 
