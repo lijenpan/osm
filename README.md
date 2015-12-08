@@ -60,6 +60,10 @@ shapeindex path/to/simplified-land-polygons-complete-3857/simplified_land_polygo
 
 Import your desired PBF of OSM data: <code>sudo -u [username] osm2pgsql -d gis path/to/data.osm.pbf --style path/to/openstreetmap-carto.style</code>
 
+Compile stylesheet for renderd: <code>carto path/to/openstreetmap-carto/project.mml > osm.xml</code>
+
+Move osm.xml to <code>/usr/local/share/maps/style/</code>
+
 ### Install Mapnik library
 Next, we need to install the Mapnik library. Mapnik is used to render the OpenStreetMap data into the tiles used for an OpenLayers web map.
 
@@ -114,7 +118,7 @@ Change the the renderd settings by editing the /usr/local/etc/renderd.conf and c
 <pre><code>socketname=/var/run/renderd/renderd.sock
 plugins_dir=/usr/local/lib/mapnik/input
 font_dir=/usr/share/fonts/truetype/ttf-dejavu
-XML=/usr/local/share/maps/style/OSMBright/OSMBright.xml
+XML=/usr/local/share/maps/style/osm.xml
 HOST=localhost</code></pre>
 
 Create the files required for the mod_tile system to run (remember to change username to your user’s name):
