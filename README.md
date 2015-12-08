@@ -46,6 +46,16 @@ mkdir build && cd build && cmake ..
 make
 sudo make install</code></pre>
 
+Download shapefiles manually:
+http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip
+http://data.openstreetmapdata.com/land-polygons-split-3857.zip
+http://planet.openstreetmap.org/historical-shapefiles/world_boundaries-spherical.tgz
+http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_boundary_lines_land.zip
+
+Put these shapefiles at <code>path/to/openstreetmap-carto/data</code>.
+
+Import your desired PBF of OSM data: <code>sudo -u [username] osm2pgsql -d gis path/to/data.osm.pbf --style path/to/openstreetmap-carto.style</code>
+
 ### Install Mapnik library
 Next, we need to install the Mapnik library. Mapnik is used to render the OpenStreetMap data into the tiles used for an OpenLayers web map.
 
