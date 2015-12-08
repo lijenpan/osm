@@ -54,6 +54,10 @@ http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cul
 
 Put these shapefiles at <code>path/to/openstreetmap-carto/data</code>.
 
+To improve performance, we create index files for the larger shapefiles:
+<pre><code>shapeindex path/to/land-polygons-split-3857/land_polygons.shp
+shapeindex path/to/simplified-land-polygons-complete-3857/simplified_land_polygons.shp</code></pre>
+
 Import your desired PBF of OSM data: <code>sudo -u [username] osm2pgsql -d gis path/to/data.osm.pbf --style path/to/openstreetmap-carto.style</code>
 
 ### Install Mapnik library
@@ -100,64 +104,6 @@ sudo make install
 sudo make install-mod_tile
 sudo ldconfig
 </code></pre>
-
-### Stylesheet configuration
-To begin with, we need to download both the OSM Bright stylesheet, and also the additional data resources it uses (for coastlines and the like).
-<pre><code>mkdir -p /usr/local/share/maps/style
-cd /usr/local/share/maps/style
-wget https://github.com/mapbox/osm-bright/archive/master.zip
-wget http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip
-wget http://data.openstreetmapdata.com/land-polygons-split-3857.zip
-wget http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/cultural/ne_10m_populated_places_simple.zip
-</code></pre>
-
-We then move the downloaded data into the osm-bright-master project directory:
-<pre><code>unzip '*.zip'
-mkdir osm-bright-master/shp
-mv land-polygons-split-3857 osm-bright-master/shp/
-mv simplified-land-polygons-complete-3857 osm-bright-master/shp/
-mv ne_10m_populated_places_simple osm-bright-master/shp/
-</code></pre>
-
-To improve performance, we create index files for the larger shapefiles:
-<pre><code>cd osm-bright-master/shp/land-polygons-split-3857
-shapeindex land_polygons.shp
-cd ../simplified-land-polygons-complete-3857/
-shapeindex simplified_land_polygons.shp
-cd ..</code></pre>
-
-#### Configuring OSM Bright
-The OSM Bright stylesheet now needs to be adjusted to include the location of our data files. Edit the file osm-bright/osm-bright.osm2pgsql.mml in your favourite text editor, for example:
-<pre><code>vim osm-bright/osm-bright.osm2pgsql.mml</code></pre>
-
-Find the lines with URLs pointing to shapefiles (ending .zip) and replace each one with these appropriate pairs of lines:
-<pre><code>"file": "/usr/local/share/maps/style/osm-bright-master/shp/land-polygons-split-3857/land_polygons.shp", 
-"type": "shape"</code></pre>
-<pre><code>"file": "/usr/local/share/maps/style/osm-bright-master/shp/simplified-land-polygons-complete-3857/simplified_land_polygons.shp", 
-"type": "shape",</code></pre>
-<pre><code>"file": "/usr/local/share/maps/style/osm-bright-master/shp/ne_10m_populated_places_simple/ne_10m_populated_places_simple.shp", 
-"type": "shape"</code></pre>
-
-Note that we are also adding “type”: “shape” to each one.
-
-Finally, in the section dealing with “ne_places”, replace the “srs” and “srs-name” lines with this one line:
-<pre><code>"srs": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"</code></pre>
-
-#### Compiling the stylesheet
-We now have a fully working CartoCSS stylesheet. Before Mapnik can use it, we need to compile it into XML using the command-line carto compiler. First of all, we use OSM Bright’s own preprocessor, which we need to edit for our setup:
-<pre><code>cp configure.py.sample configure.py
-vim configure.py
-</code></pre>
-
-Change the config line pointing to ~/Documents/Mapbox/project to /usr/local/share/maps/style instead, and change dbname from osm to gis. Save and exit.
-
-Run the pre-processor and then carto:
-<pre><code>./make.py
-cd ../OSMBright/
-carto project.mml > OSMBright.xml
-</code></pre>
-
-You now have a Mapnik XML stylesheet at /usr/local/share/maps/style/OSMBright/OSMBright.xml.
 
 ### Setting up your webserver
 Next we need to plug renderd and mod_tile into the Apache webserver, ready to receive tile requests.
