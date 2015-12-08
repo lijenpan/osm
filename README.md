@@ -36,6 +36,40 @@ ALTER TABLE spatial_ref_sys OWNER TO [username];
 \q
 </code></pre>
 
+### Install Mapnik library
+Next, we need to install the Mapnik library. Mapnik is used to render the OpenStreetMap data into the tiles used for an OpenLayers web map.
+<code>sudo apt-get install mapnik-utils # This installs v2.2</code>
+
+#### Optional steps if you are installing Mapnik 3.0.9
+Default Ubuntu distro does not come with latest harfbuzz or boost libraries, which are required for Mapnik 3.0.9.
+
+##### Install Haffbuzz 1.1.2
+<pre><code>wget http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-1.1.2.tar.bz2
+tar xf harfbuzz-1.1.2.tar.bz2
+cd harfbuzz-1.1.2
+./configure && make && sudo make install
+sudo ldconfig
+</code></pre>
+
+##### Install boost 1.59
+<pre><code>http://downloads.sourceforge.net/boost/boost_1_59_0.tar.bz2
+tar xf boost_1_59_0.tar.bz2
+cd boost_1_59_0
+sed -e '1 i#ifndef Q_MOC_RUN' \
+    -e '$ a#endif'            \
+    -i boost/type_traits/detail/has_binary_operator.hpp &&
+./bootstrap.sh --prefix=/usr &&
+./b2 stage threading=multi link=shared
+</code></pre>
+
+#### Build the Mapnik library from source
+You would want to download 2.3.x branch.
+<pre><code>git clone git://github.com/mapnik/mapnik
+cd mapnik
+./configure
+make && sudo make install
+</code></pre>
+
 ### Installing osm2pgsql
 First install the dependencies:
 <pre><code>sudo apt-get install make cmake g++ libboost-dev libboost-system-dev libboost-filesystem-dev libexpat1-dev zlib1g-dev libbz2-dev libpq-dev libgeos-dev libgeos++-dev libproj-dev lua5.2 liblua5.2-dev</code></pre>
@@ -75,39 +109,6 @@ Import your desired PBF of OSM data: <code>sudo -u [username] osm2pgsql -d gis p
 Compile stylesheet for renderd: <code>carto path/to/openstreetmap-carto/project.mml > osm.xml</code>
 
 Move osm.xml to <code>/usr/local/share/maps/style/</code>
-
-### Install Mapnik library
-Next, we need to install the Mapnik library. Mapnik is used to render the OpenStreetMap data into the tiles used for an OpenLayers web map.
-
-#### Optional steps if you are installing Mapnik 3.0.9
-Default Ubuntu distro does not come with latest harfbuzz or boost libraries, which are required for Mapnik 3.0.9.
-
-##### Install Haffbuzz 1.1.2
-<pre><code>wget http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-1.1.2.tar.bz2
-tar xf harfbuzz-1.1.2.tar.bz2
-cd harfbuzz-1.1.2
-./configure && make && sudo make install
-sudo ldconfig
-</code></pre>
-
-##### Install boost 1.59
-<pre><code>http://downloads.sourceforge.net/boost/boost_1_59_0.tar.bz2
-tar xf boost_1_59_0.tar.bz2
-cd boost_1_59_0
-sed -e '1 i#ifndef Q_MOC_RUN' \
-    -e '$ a#endif'            \
-    -i boost/type_traits/detail/has_binary_operator.hpp &&
-./bootstrap.sh --prefix=/usr &&
-./b2 stage threading=multi link=shared
-</code></pre>
-
-#### Build the Mapnik library from source
-You would want to download 2.3.x branch.
-<pre><code>git clone git://github.com/mapnik/mapnik
-cd mapnik
-./configure
-make && sudo make install
-</code></pre>
 
 ### Install mod_tile and renderd
 Compile the mod_tile source code:
