@@ -52,7 +52,7 @@ Download shapefiles manually:
 * http://planet.openstreetmap.org/historical-shapefiles/world_boundaries-spherical.tgz
 * http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_boundary_lines_land.zip
 
-Put these shapefiles at <code>path/to/openstreetmap-carto/data</code>.
+Put these shapefiles at <code>/usr/local/share/maps/style/data</code>.
 
 To improve performance, we create index files for the larger shapefiles:
 <pre><code>shapeindex path/to/land-polygons-split-3857/land_polygons.shp
