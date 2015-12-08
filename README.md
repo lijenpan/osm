@@ -7,7 +7,7 @@ It consists of 5 main components: Mod_tile, renderd, mapnik, osm2pgsql and a pos
 
 In order to build these components, a variety of dependencies need to be installed first:
 
-<pre><code>sudo apt-get install libboost-all-dev subversion git-core tar unzip wget bzip2 build-essential autoconf libtool libxml2-dev libgeos-dev libgeos++-dev libpq-dev libbz2-dev libproj-dev munin-node munin libprotobuf-c0-dev protobuf-c-compiler libfreetype6-dev libpng12-dev libtiff4-dev libicu-dev libgdal-dev libcairo-dev libcairomm-1.0-dev apache2 apache2-dev libagg-dev ttf-unifont libgeotiff-epsg node-carto</code></pre>
+<pre><code>sudo apt-get install libboost-all-dev subversion git-core tar unzip wget bzip2 build-essential autoconf libtool libxml2-dev libgeos-dev libgeos++-dev libpq-dev libbz2-dev libproj-dev munin-node munin libprotobuf-c0-dev protobuf-c-compiler libfreetype6-dev libpng12-dev libtiff4-dev libicu-dev libgdal-dev libcairo-dev libcairomm-1.0-dev apache2 apache2-dev libagg-dev ttf-unifont libgeotiff-epsg node-carto mapnik-utils</code></pre>
 
 ### Installing postgresql / postgis
 
@@ -38,7 +38,6 @@ ALTER TABLE spatial_ref_sys OWNER TO [username];
 
 ### Install Mapnik library
 Next, we need to install the Mapnik library. Mapnik is used to render the OpenStreetMap data into the tiles used for an OpenLayers web map.
-<code>sudo apt-get install mapnik-utils # This installs v2.2</code>
 
 #### Optional steps if you are installing Mapnik 3.0.9
 Default Ubuntu distro does not come with latest harfbuzz or boost libraries, which are required for Mapnik 3.0.9.
