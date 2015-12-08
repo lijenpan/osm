@@ -43,9 +43,14 @@ First install the dependencies:
 osm2pgsql is under active development and is best compiled from source:
 <pre><code>git clone git://github.com/openstreetmap/osm2pgsql.git
 cd osm2pgsql
+# If you are compiling master branch
 mkdir build && cd build && cmake ..
-make
-sudo make install</code></pre>
+make && sudo make install
+
+# If you are compiling 0.88.x branch
+./autogen.sh
+./configure && make && sudo make install
+</code></pre>
 
 Download shapefiles manually:
 * http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip
