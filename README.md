@@ -30,7 +30,7 @@ sudo passwd [username]
 <pre><code>sudo -u postgres psql
 \c gis
 CREATE EXTENSION postgis;
-CREATE EXTENSION hstore;
+CREATE EXTENSION postgis_topology;
 ALTER TABLE geometry_columns OWNER TO [username];
 ALTER TABLE spatial_ref_sys OWNER TO [username];
 \q
