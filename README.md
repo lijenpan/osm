@@ -133,6 +133,8 @@ font_dir=/usr/share/fonts/truetype/ttf-dejavu
 XML=/usr/local/share/maps/style/osm.xml
 HOST=localhost</code></pre>
 
+Delete the rest of commented out lines.
+
 Create the files required for the mod_tile system to run (remember to change username to your user’s name):
 <pre><code>sudo mkdir /var/run/renderd
 sudo chown [username] /var/run/renderd
