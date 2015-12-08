@@ -103,7 +103,7 @@ To improve performance, we create index files for the larger shapefiles:
 /usr/local/share/maps/style/data/antarctica-icesheet-outlines-3857/icesheet_outlines.shp \
 /usr/local/share/maps/style/data/ne_110m_admin_0_boundary_lines_land/ne_110m_admin_0_boundary_lines_land.shp</code></pre>
 
-Import your desired PBF of OSM data: <code>sudo -u [username] osm2pgsql -d gis path/to/data.osm.pbf --style path/to/openstreetmap-carto.style</code>
+Import your desired PBF of OSM data: <code>sudo -u [username] osm2pgsql --slim -d gis path/to/data.osm.pbf --style path/to/openstreetmap-carto.style</code>
 
 Compile stylesheet for renderd: <code>carto path/to/openstreetmap-carto/project.mml > osm.xml</code>
 
