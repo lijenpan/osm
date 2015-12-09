@@ -298,14 +298,6 @@ ModTileThrottlingRenders 128 0.2
     LogLevel debug
 </VirtualHost></code></pre>
 
-Apache’s default website configuration file needs to be modified to include mod_tile settings. Modify the file /etc/apache2/sites-available/000-default.conf to include the following lines immediately after the admin e-mail address line:
-<pre><code>LoadTileConfigFile /usr/local/etc/renderd.conf
-ModTileRenderdSocketName /var/run/renderd/renderd.sock
-# Timeout before giving up for a tile to be rendered
-ModTileRequestTimeout 0
-# Timeout before giving up for a tile to be rendered that is otherwise missing
-ModTileMissingRequestTimeout 30</code></pre>
-
 Tell Apache that you have added the new module, and restart it:
 <pre><code>sudo a2enconf mod_tile
 service apache2 reload</code></pre>
