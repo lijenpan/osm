@@ -145,7 +145,7 @@ Using your favourite text editor, create the file /etc/apache2/conf-available/mo
 
 LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so
 
-<VirtualHost *:80>
+&lt;VirtualHost *:80&gt;
     ServerName tile.openstreetmap.org
     ServerAlias a.tile.openstreetmap.org b.tile.openstreetmap.org c.tile.openstreetmap.org d.tile.openstreetmap.org
     DocumentRoot /var/www/html
@@ -292,7 +292,7 @@ ModTileThrottlingRenders 128 0.2
 ###    
 # increase the log level for more detailed information
     LogLevel debug
-</VirtualHost></code></pre>
+&lt;/VirtualHost&gt;</code></pre>
 
 Tell Apache that you have added the new module, and restart it:
 <pre><code>sudo a2enconf mod_tile
