@@ -62,7 +62,7 @@ sed -e '1 i#ifndef Q_MOC_RUN' \
 </code></pre>
 
 #### Build the Mapnik library from source
-You would want to download 2.3.x branch.
+You would want to download 3.0.9 branch.
 <pre><code>git clone git://github.com/mapnik/mapnik
 cd mapnik
 ./configure
