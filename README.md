@@ -36,11 +36,8 @@ ALTER TABLE spatial_ref_sys OWNER TO [username];
 \q
 </code></pre>
 
-### Install Mapnik library
+### Install Mapnik library 3.0.9
 Next, we need to install the Mapnik library. Mapnik is used to render the OpenStreetMap data into the tiles used for an OpenLayers web map.
-
-#### Optional steps if you are installing Mapnik 3.0.9
-Default Ubuntu distro does not come with latest harfbuzz or boost libraries, which are required for Mapnik 3.0.9.
 
 ##### Install Haffbuzz 1.1.2
 <pre><code>wget http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-1.1.2.tar.bz2
@@ -62,7 +59,6 @@ sed -e '1 i#ifndef Q_MOC_RUN' \
 </code></pre>
 
 #### Build the Mapnik library from source
-You would want to download 3.0.9 branch.
 <pre><code>git clone git://github.com/mapnik/mapnik
 cd mapnik
 ./configure
