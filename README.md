@@ -304,7 +304,10 @@ The default configuration for PostgreSQL 9.3 needs to be tuned for the amount of
 <pre><code>shared_buffers = 128MB
 checkpoint_segments = 20
 maintenance_work_mem = 256MB
-autovacuum = off</code></pre>
+effective_io_concurrency = 2
+synchronous_commit = off
+autovacuum = off (only during import)
+fsync = off (only during import)</code></pre>
 
 These changes require a kernel configuration change, which needs to be applied every time that the computer is rebooted. As root, edit /etc/sysctl.conf and add these lines near the top after the other “kernel” definitions:
 <pre><code># Increase kernel shared memory segments - needed for large databases
