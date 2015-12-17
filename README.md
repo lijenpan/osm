@@ -332,7 +332,7 @@ Since the whole planet is at least 18GB when compressed, there are links to smal
 With the conversion tool compiled and the database prepared, the following command will insert the OpenStreetMap data you downloaded earlier into the database. This step is very disk I/O intensive; the full planet will take anywhere from 10 hours on a fast server with SSDs to several days depending on the speed of the computer performing the import. For smaller extracts the import time is much faster accordingly, and you may need to experiment with different -C values to fit within your machine’s available memory.
 
 You will need to run this command as a known Postgres user.
-<pre><code>osm2pgsql --slim -d gis -C 1600 --number-process 3 --cache-strategy=dense -S /usr/local/share/osm2pgsql/default.style planet-latest.osm.pbf</code></pre>
+<pre><code>osm2pgsql --slim -d gis -C 1600 --number-process 3 --cache-strategy dense -S /usr/local/share/osm2pgsql/default.style planet-latest.osm.pbf</code></pre>
 
 You will see status report as it imports map tiles.
 <pre><code>osm2pgsql SVN version 0.89.0-dev (64 bit id space)
