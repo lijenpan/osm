@@ -390,3 +390,8 @@ Next, add a link to the interactive startup directory so that it starts automati
 <code>sudo ln -s /etc/init.d/renderd /etc/rc2.d/S20renderd</code>
 
 and then restart your server, browse to http://yourserveraddress/osm_tiles/0/0/0.png and everything should be working! You can also go to the page http://yourserveraddress/mod_tile which should give you some stats about your tile server.
+
+# FAQ
+## [Why is osm2pgsql so slow to import Way?](https://github.com/openstreetmap/osm2pgsql/issues/128)
+
+## [Having abundant memory is important but the gating factor is harddrive speed.](http://wiki.openstreetmap.org/wiki/Osm2pgsql/benchmarks)
