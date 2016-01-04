@@ -180,8 +180,7 @@ LoadModule tile_module /usr/lib/apache2/modules/mod_tile.so
 # Timeout before giving up for a tile to be rendered
     ModTileRequestTimeout 3
 
-# Timeout before giving up for a tile to be rendered that is otherwise missing, you would want to increase this number
-# if you are seeing "Failed to read cmd" messages in renderd logs.
+# Timeout before giving up for a tile to be rendered that is otherwise missing
     ModTileMissingRequestTimeout 10
 
 # If tile is out of date, don't re-render it if past this load threshold (users gets old tile)
