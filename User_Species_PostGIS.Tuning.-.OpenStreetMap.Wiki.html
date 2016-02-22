@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning -->
+<html lang="en" dir="ltr" class="client-js ve-available"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>User:Species/PostGIS Tuning - OpenStreetMap Wiki</title>
+<script>document.documentElement.className = document.documentElement.className.replace( /(^|\s)client-nojs(\s|$)/, "$1client-js$2" );</script>
+<script>window.RLQ = window.RLQ || []; window.RLQ.push( function () {
+mw.config.set({"wgCanonicalNamespace":"User","wgCanonicalSpecialPageName":!1,"wgNamespaceNumber":2,"wgPageName":"User:Species/PostGIS_Tuning","wgTitle":"Species/PostGIS Tuning","wgCurRevisionId":988050,"wgRevisionId":988050,"wgArticleId":119639,"wgIsArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":[],"wgBreakFrames":!1,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"User:Species/PostGIS_Tuning","wgRelevantArticleId":119639,"wgIsProbablyEditable":!1,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgRelevantUserName":"Species","wgVisualEditor":{"pageLanguageCode":"en",
+"pageLanguageDir":"ltr","usePageImages":!1,"usePageDescriptions":!1},"wgULSAcceptLanguageList":["en-us","en"],"wgULSCurrentAutonym":"English","wgWikiEditorEnabledModules":{"toolbar":!1,"dialogs":!1,"preview":!1,"publish":!1},"wgVisualEditorToolbarScrollOffset":0});mw.loader.implement("user.options",function($,jQuery){mw.user.options.set({"variant":"en"});});mw.loader.implement("user.tokens",function($,jQuery){mw.user.tokens.set({"editToken":"+\\","patrolToken":"+\\","watchToken":"+\\"});});mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","ext.visualEditor.desktopArticleTarget.init","ext.uls.init","ext.uls.interface","skins.vector.js"]);
+} );</script>
+<link rel="stylesheet" href="./User_Species_PostGIS Tuning - OpenStreetMap Wiki_files/load.php">
+<style>
+.uls-trigger{background:transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAQCAMAAADQzfSkAAABqlBMVEX////f3/+Ov+/n5+fp6enp6eno6Ojp6enn5+ff39/q6urp6enp6enp6enq6urp6en////q6urr6+upv+rU1NTJycnR0dEaGhrp6enT4/SEuuK9vb3l5eU2ktCxsbFdXV1paWmzwc9ITFDo6OhaWlpsbGxtbW2BipSZpK/X19d2dnZ8hI2/v79PT09gZm2CgoLIyMjD0eGksL1JTVHM2+spKywnKCkcHBzAzt3I1+cxMzZxcXFkZGSvr69WW2C8vLyFjphqcXiLlZ8dHh4gISLa2trQ3/Dc3NzZ2dl7e3uioqIfHyBCRko9QEPh4eFgYGDGxsZoaGiPj4/Ly8uRm6a6yNcbGxuSnKfL2uqVn6scHR20tLR/f3+Kioq4uLienp54gIipqanA2e+71u9GSk5yeoKgoKCAgIB0dHRLS0tlZWWDg4PBwcHFxcWxvsxkanGapbCKlJ7O4fNXo9hQn9bM3/OPmaRfZWve3t6mpqbR0dG+vr6JiYnKyspPVFl1s99+fn5srdzm5ubNzc1BREh2s99xsN7S0tIxMzUiIyQ2OTt/iJFwcHBbYWc3S28lAAAAF3RSTlMACBAg7P3LiTYIX6LmmDzeAYMnDN+1MJx17ncAAAEQSURBVHheddBTb0VREIbhVduYWVuHRm3btm3bNv9zJ2v3IE36Xk3yZG4+xkMKw0BREYwJMzkcO38MY37tG6AmYN48YZFxwsbeiys6y/02rT1Wa4TxwoYgpx4adLMbfRubs9tk0cJuYK8ACv1/Xy5LLlIYS5bf2FTUUlJapptiqKwyuOfJEsjq4M3j+YBPYc02X6utTWnvQEwk6wJRNxn29Pb1D2iIg0bEJMaHYWTU6RyfABPZ5BTa7xBxxo2YzPgcPPGFRb4Ey2Qrq2vrXlRk6xampDK+a94/ODw6PjGfkp2dX1y6ZOvVNWKavsutqt6HbGZ5QCqdMUmSnlXqhY6M12CZtKcaUnhtsKz/Tc5m7AfjN0jzWIipawAAAABJRU5ErkJggg==) no-repeat scroll left center;background:transparent url(//wiki.openstreetmap.org/w/extensions/UniversalLanguageSelector/lib/jquery.uls/images/icon-language.png?4d0aa) no-repeat scroll left center!ie;background-image:-webkit-linear-gradient(transparent,transparent),url(data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2227%22%20height%3D%2216%22%3E%3Cpath%20fill%3D%22%23D3E3F4%22%20d%3D%22M0%200h11.876v16h-11.876v-16z%22%2F%3E%3Cpath%20fill%3D%22%23E9E9E9%22%20d%3D%22M12.819%200v15.969h10.755c1.085-2.578%201.837-4.991%203.062-8.591l-3.062-7.378h-10.755z%22%2F%3E%3Cpath%20fill%3D%22%23434343%22%20d%3D%22M14.828%204.146c.32.023.639.035.951.035.471%200%20.922-.016%201.354-.046l.023-.258.034-.367.081-.711.033-.333.873.058c-.073.577-.133%201.091-.179%201.542%201.116-.119%202.233-.331%203.349-.637l.092.809c-1.078.271-2.251.472-3.521.602-.05.463-.082.968-.098%201.514.524-.187%201.14-.313%201.847-.378.064-.207.136-.461.213-.763l.865.201c-.027.123-.088.315-.184.579.814.104%201.461.34%201.938.711.681.542%201.021%201.252%201.021%202.128%200%20.963-.406%201.746-1.221%202.351-.635.47-1.505.784-2.609.94l-.505-.779c.968-.104%201.739-.337%202.317-.7.733-.458%201.101-1.066%201.101-1.823%200-.772-.341-1.363-1.021-1.772-.345-.21-.764-.344-1.256-.401-.604%201.422-1.4%202.598-2.387%203.527.035.352.102.715.201%201.09l-.849.314-.126-.773c-.654.462-1.27.693-1.847.693-.696%200-1.044-.407-1.044-1.222%200-1.104.591-2.103%201.771-2.993.227-.165.532-.352.918-.562.012-.524.046-1.128.104-1.812-.585.046-1.143.069-1.675.069l-.493-.011-.071-.822m2.127%203.384c-.268.161-.545.392-.831.694-.612.619-.94%201.226-.986%201.817l-.017.121.017.138c0%20.252.112.378.339.378.492%200%201.02-.258%201.582-.773-.057-.613-.092-1.404-.104-2.375m2.455-.884c-.57.08-1.111.226-1.623.436%200%20.883.018%201.581.052%202.093.634-.707%201.158-1.55%201.571-2.529%22%2F%3E%3Cpath%20fill%3D%22%231A1A1A%22%20d%3D%22M8.517%2011.735l-.734-2.409h-3.69l-.734%202.409h-2.313l3.573-10.165h2.625l3.587%2010.165h-2.314m-1.246-4.21c-.679-2.183-1.062-3.418-1.149-3.704-.083-.286-.143-.512-.18-.678-.153.59-.589%202.051-1.309%204.382h2.638%22%2F%3E%3Cpath%20fill%3D%22%23BCBCBC%22%20d%3D%22M12.817%2013.5v2.5h10.757l.98-2.5h-11.737z%22%2F%3E%3Cpath%20fill%3D%22%233692D0%22%20d%3D%22M.011%2013.511h3.569l2.367-3.116%202.367%203.116h3.57v2.484h-11.873v-2.484z%22%2F%3E%3C%2Fsvg%3E);background-image:-webkit-linear-gradient(transparent,transparent),url(//wiki.openstreetmap.org/w/extensions/UniversalLanguageSelector/lib/jquery.uls/images/icon-language.svg?9334a)!ie;background-image:linear-gradient(transparent,transparent),url(data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2227%22%20height%3D%2216%22%3E%3Cpath%20fill%3D%22%23D3E3F4%22%20d%3D%22M0%200h11.876v16h-11.876v-16z%22%2F%3E%3Cpath%20fill%3D%22%23E9E9E9%22%20d%3D%22M12.819%200v15.969h10.755c1.085-2.578%201.837-4.991%203.062-8.591l-3.062-7.378h-10.755z%22%2F%3E%3Cpath%20fill%3D%22%23434343%22%20d%3D%22M14.828%204.146c.32.023.639.035.951.035.471%200%20.922-.016%201.354-.046l.023-.258.034-.367.081-.711.033-.333.873.058c-.073.577-.133%201.091-.179%201.542%201.116-.119%202.233-.331%203.349-.637l.092.809c-1.078.271-2.251.472-3.521.602-.05.463-.082.968-.098%201.514.524-.187%201.14-.313%201.847-.378.064-.207.136-.461.213-.763l.865.201c-.027.123-.088.315-.184.579.814.104%201.461.34%201.938.711.681.542%201.021%201.252%201.021%202.128%200%20.963-.406%201.746-1.221%202.351-.635.47-1.505.784-2.609.94l-.505-.779c.968-.104%201.739-.337%202.317-.7.733-.458%201.101-1.066%201.101-1.823%200-.772-.341-1.363-1.021-1.772-.345-.21-.764-.344-1.256-.401-.604%201.422-1.4%202.598-2.387%203.527.035.352.102.715.201%201.09l-.849.314-.126-.773c-.654.462-1.27.693-1.847.693-.696%200-1.044-.407-1.044-1.222%200-1.104.591-2.103%201.771-2.993.227-.165.532-.352.918-.562.012-.524.046-1.128.104-1.812-.585.046-1.143.069-1.675.069l-.493-.011-.071-.822m2.127%203.384c-.268.161-.545.392-.831.694-.612.619-.94%201.226-.986%201.817l-.017.121.017.138c0%20.252.112.378.339.378.492%200%201.02-.258%201.582-.773-.057-.613-.092-1.404-.104-2.375m2.455-.884c-.57.08-1.111.226-1.623.436%200%20.883.018%201.581.052%202.093.634-.707%201.158-1.55%201.571-2.529%22%2F%3E%3Cpath%20fill%3D%22%231A1A1A%22%20d%3D%22M8.517%2011.735l-.734-2.409h-3.69l-.734%202.409h-2.313l3.573-10.165h2.625l3.587%2010.165h-2.314m-1.246-4.21c-.679-2.183-1.062-3.418-1.149-3.704-.083-.286-.143-.512-.18-.678-.153.59-.589%202.051-1.309%204.382h2.638%22%2F%3E%3Cpath%20fill%3D%22%23BCBCBC%22%20d%3D%22M12.817%2013.5v2.5h10.757l.98-2.5h-11.737z%22%2F%3E%3Cpath%20fill%3D%22%233692D0%22%20d%3D%22M.011%2013.511h3.569l2.367-3.116%202.367%203.116h3.57v2.484h-11.873v-2.484z%22%2F%3E%3C%2Fsvg%3E);background-image:linear-gradient(transparent,transparent),url(//wiki.openstreetmap.org/w/extensions/UniversalLanguageSelector/lib/jquery.uls/images/icon-language.svg?9334a)!ie;padding-left:30px}#pt-uls a.uls-trigger{padding-left:30px; line-height:1}   x:-o-prefocus,body.rtl li#pt-uls{ direction:ltr}#uls-settings-block{border-top:1px solid #C9C9C9;background:#f8f8f8;background:-webkit-gradient(linear,left top,left bottom,from(#FBFBFB),to(#F0F0F0));background:-webkit-linear-gradient(top,#FBFBFB,#F0F0F0);background:-moz-linear-gradient(top,#FBFBFB,#F0F0F0);background:-o-linear-gradient(top,#FBFBFB,#F0F0F0);background:linear-gradient(#FBFBFB,#F0F0F0);padding-left:10px;line-height:1.2em;border-radius:0 0 5px 5px}#uls-settings-block div.display-settings-block,#uls-settings-block div.input-settings-block{display:inline-block;margin:8px 15px;color:#565656}#uls-settings-block div.display-settings-block:hover,#uls-settings-block div.input-settings-block:hover{color:#252525}
+.mw-collapsible-toggle{float:right;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}  .mw-content-ltr .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr .mw-collapsible-toggle{float:right} .mw-content-rtl .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl .mw-collapsible-toggle{float:left}.mw-customtoggle,.mw-collapsible-toggle{cursor:pointer} caption .mw-collapsible-toggle,.mw-content-ltr caption .mw-collapsible-toggle,.mw-content-rtl caption .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr caption .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl caption .mw-collapsible-toggle{float:none} li .mw-collapsible-toggle,.mw-content-ltr li .mw-collapsible-toggle,.mw-content-rtl li .mw-collapsible-toggle,.mw-content-rtl .mw-content-ltr li .mw-collapsible-toggle,.mw-content-ltr .mw-content-rtl li .mw-collapsible-toggle{float:none} .mw-collapsible-toggle-li{list-style:none}
+.suggestions{overflow:hidden;position:absolute;top:0;left:0;width:0;border:none;z-index:1099;padding:0;margin:-1px 0 0 0}.suggestions-special{position:relative;background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0;margin-top:-2px;display:none;padding:0.25em 0.25em;line-height:1.25em}.suggestions-results{background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0}.suggestions-result{color:black;margin:0;line-height:1.5em;padding:0.01em 0.25em;text-align:left; overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}.suggestions-result-current{background-color:#4C59A6;color:white}.suggestions-special .special-label{color:gray;text-align:left}.suggestions-special .special-query{color:black;font-style:italic;text-align:left}.suggestions-special .special-hover{background-color:silver}.suggestions-result-current .special-label,.suggestions-result-current .special-query{color:white}.highlight{font-weight:bold}
+table.navbox{ border:1px solid #aaa;width:100%;margin:auto;clear:both;font-size:88%;text-align:center;padding:1px}table.navbox + table.navbox{ margin-top:-1px; }.navbox-title,.navbox-abovebelow,table.navbox th{text-align:center; padding-left:1em;padding-right:1em}.navbox-group{ white-space:nowrap;text-align:right;font-weight:bold;padding-left:1em;padding-right:1em}.navbox,.navbox-subgroup{background:#fdfdfd; }.navbox-list{border-color:#fdfdfd; }.navbox-title,table.navbox th{background:#ccccff; }.navbox-abovebelow,.navbox-group,.navbox-subgroup .navbox-title{background:#ddddff; }.navbox-subgroup .navbox-group,.navbox-subgroup .navbox-abovebelow{background:#e6e6ff; }.navbox-even{background:#f7f7f7; }.navbox-odd{background:transparent; }.collapseButton{ float:right; font-weight:normal; text-align:right; width:auto}.navbox .collapseButton{ width:6em; }  div.BoxenVerschmelzen,div.NavFrame{margin:0px;padding:2px;border:1px solid #aaaaaa;text-align:center;border-collapse:collapse;font-size:95%;clear:both}div.BoxenVerschmelzen div.NavFrame{border-style:none;border-style:hidden}div.NavFrame + div.NavFrame{border-top-style:none;border-top-style:hidden}div.NavPic{background-color:#ffffff;margin:0px;padding:2px;float:left}div.NavFrame div.NavHead{font-weight:bold;font-size:100%;background-color:#efefef}div.NavFrame p{font-size:100%}div.NavFrame div.NavContent{font-size:100%}div.NavFrame div.NavContent p{font-size:100%}div.NavEnd{margin:0px;padding:0px;line-height:1px;clear:both} .NavToggle{font-size:x-small;float:right} div.NavFrame,div.NavPic,.NavToggle{position:relative} div.BoxenVerschmelzen,div.NavFrame{margin-top:1.5em}div.BoxenVerschmelzen div.NavFrame{margin-top:0}div.NavFrame + div.NavFrame{margin-top:0} @media print{.NavFrame{display:none}.BoxenVerschmelzen{display:none}} .mw-plusminus-pos{color:#006400 }.mw-plusminus-neg{color:#8B0000 }  TABLE.wikitable{border-style:solid;border-width:1px;border-color:#aaa;background:#f9f9f9;border-collapse:collapse;font-size:95%}TABLE.wikitable TD{padding:4px;border-style:solid;border-width:1px;border-color:#aaa}TABLE.wikitable TH{padding:4px;background-color:#E9E9E9;border-style:solid;border-width:1px;border-color:#aaa}tt{font-size:115%}div.mw-geshi{background-color:#F9F9F9;border:1px dashed #2F6FAB;color:black;line-height:1.1em;padding:1em;font:1em/1.2em monospace;font-size:1.2em}pre{font-size:1.2em} div#content a.external[href ^="https://"]{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAFZJREFUeF59z4EJADEIQ1F36k7u5E7ZKXeUQPACJ3wK7UNokVxVk9kHnQH7bY9hbDyDhNXgjpRLqFlo4M2GgfyJHhjq8V4agfrgPQX3JtJQGbofmCHgA/nAKks+JAjFAAAAAElFTkSuQmCC)} body.page-Main_Page h1.firstHeading{display:none}
+.tipsy{padding:5px;position:absolute;z-index:100000;cursor:default}.tipsy-inner{padding:5px 8px 4px 8px; background-color:#ffffff;border:solid 1px #a7d7f9;color:black;max-width:15em;border-radius:4px; }.tipsy-arrow{position:absolute;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALAgMAAADUwp+1AAAACVBMVEX5+fmn1/n///9s6BFKAAAAAXRSTlMAQObYZgAAACpJREFUCB1jZBD4wMiQMoeRcUU4I9uSaYxSE54xZjn8AtMgPkgcJA9UBwAeDw1Qrb3pVAAAAABJRU5ErkJggg==) no-repeat top left;background:url(//wiki.openstreetmap.org/w/resources/src/jquery.tipsy/images/tipsy.png?6c317) no-repeat top left!ie;width:11px;height:6px} .tipsy-n .tipsy-arrow{top:0px;left:50%;margin-left:-5px} .tipsy-nw .tipsy-arrow{top:1px;left:10px} .tipsy-ne .tipsy-arrow{top:1px;right:10px} .tipsy-s .tipsy-arrow{bottom:0px;left:50%;margin-left:-5px;background-position:bottom left} .tipsy-sw .tipsy-arrow{bottom:0px;left:10px;background-position:bottom left} .tipsy-se .tipsy-arrow{bottom:0px;right:10px;background-position:bottom left} .tipsy-e .tipsy-arrow{top:50%;margin-top:-5px;right:1px;width:5px;height:11px;background-position:top right} .tipsy-w .tipsy-arrow{top:50%;margin-top:-5px;left:0px;width:6px;height:11px} .tipsy{font-size:0.8em}
+.uls-menu a{cursor:pointer}.uls-menu.callout .caret-before{border-top:20px solid transparent;border-right:20px solid #C9C9C9;border-bottom:20px solid transparent;display:inline-block;left:-21px;top:30px;position:absolute}.uls-menu.callout .caret-after{border-top:20px solid transparent;border-right:20px solid #FCFCFC;border-bottom:20px solid transparent;display:inline-block;left:-20px;top:30px;position:absolute}.uls-ui-languages button{width:23%;text-overflow:ellipsis;margin-right:4%}button.uls-more-languages{width:auto}.settings-title{font-size:11pt}.settings-text{color:#555555;font-size:9pt}div.display-settings-block:hover .settings-text{color:#252525}
+.postedit-container{margin:0 auto;position:fixed;top:0;height:0;left:50%;z-index:1000;font-size:13px}.postedit-container:hover{cursor:pointer}.postedit{position:relative;top:0.6em;left:-50%;padding:.6em 3.6em .6em 1.1em;line-height:1.5625em;color:#626465;background-color:#f4f4f4;border:1px solid #dcd9d9;text-shadow:0 0.0625em 0 rgba(255,255,255,0.5);border-radius:5px;box-shadow:0 2px 5px 0 #ccc;-webkit-transition:all 0.25s ease-in-out;-moz-transition:all 0.25s ease-in-out;-ms-transition:all 0.25s ease-in-out;-o-transition:all 0.25s ease-in-out;transition:all 0.25s ease-in-out}.skin-monobook .postedit{top:6em !important}.postedit-faded{opacity:0}.postedit-icon{padding-left:41px;  line-height:25px;background-repeat:no-repeat;background-position:8px 50%}.postedit-icon-checkmark{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABblBMVEUAAAD///////9PfTf///80aRdTgjn///9Feij///////////9Rfzf///////////9PfjZRgDh1o1xOfTb///////+bwYqLtnj///////9PfTa82K////9WhT6YxIL///9QgDdTgzr////////j7uDl7eLq8efi693k7OH///////9UhjuBr2rp9uRUhjr///9YljVKgir///9WiTlYjT3////9/v57vFlbkT5PjC9dlD/5/fhuq09stUTs9uhxuElctCpfnT1huDFloEZloUZmpENmvDZpvDxpvTxqvjxrvT5rvT9rwTxsqktswD5uwkBvuUdxw0NztFBztU9ztVBzwkp0tlJ1xkd2t1R3uVR4w1F4xk54x014yE15uVZ5v1R5xVB6v1R7yFJ8wVh9xVl9yFR9yVd9ylN+xVh+yFd/x1l/yFeAylmEx1+Ny2uY0Hqe04Wj1Ymv3Ze33qLD47TJ5L3O6cPU7Mrq9eb2+/Q4j37OAAAAQHRSTlMAAQIEBAUFBQwPFB4fJCUoKiosQEhJS01RUlZZXmdydXaChYuSlJSWmJmoq6uur8LExcvM19fg5ejt8fX2+Pr7SljgewAAAKpJREFUGBkFwQNCAwAAAMDLtl3LtrG4rWXbtvX77gAgZ6grFwC0bhwNVgKgdPZx8b0dgLi+s7Wn0VoAqpfOI9+BNADZI7fLrz2pSEwGHZuH+78lSK8ZLkLezF3ooyUG3VPXq2USei9WngeyoG195yBYWDF3E/2pAhl1e9Gr8bGT+bfOFCC2fnvh4X7rcqIAQNNu+HT6sxkAjceTL/2ZAIhv+PorBwBJxfkA//dFHSCBy/UTAAAAAElFTkSuQmCC);background-image:url(//wiki.openstreetmap.org/w/resources/src/mediawiki.action/images/green-checkmark.png?9048a)!ie;background-position:left}.postedit-close{position:absolute;padding:0 .8em;right:0;top:0;font-size:1.25em;font-weight:bold;line-height:2.3em;color:black;text-shadow:0 0.0625em 0 white;text-decoration:none;opacity:0.2;filter:alpha(opacity=20)}.postedit-close:hover{color:black;text-decoration:none;opacity:0.4;filter:alpha(opacity=40)}
+.ve-activated #toc,.ve-activated #siteNotice,.ve-activated .mw-indicators, .ve-active #bodyContent > :not(#siteSub):not(#contentSub):not(.ve-ui-mwTocWidget),.ve-activated #t-print,.ve-activated #t-permalink,.ve-activated #p-coll-print_export,.ve-activated #t-cite,.ve-activating .ve-ui-surface,.ve-deactivating .ve-ui-surface{display:none}.ve-activated #bodyContent,.ve-activated #firstHeading,.ve-activated #siteSub,.ve-activated #contentSub{opacity:0.6;pointer-events:none}.ve-activated #firstHeading{cursor:default} .ve-activated #content{position:relative}.ve-init-mw-desktopArticleTarget-loading-overlay{position:absolute;left:0;right:0;z-index:1;margin-top:-0.5em}.ve-init-mw-desktopArticleTarget-progress{border:1px solid #347bff;background:#fff;height:0.75em;border-radius:2px;overflow:hidden;margin:0 25%}.ve-init-mw-desktopArticleTarget-progress-bar{width:0;height:0.75em;background:#347bff} .mw-editsection{white-space:nowrap; unicode-bidi:-moz-isolate;unicode-bidi:-webkit-isolate;unicode-bidi:isolate}.mw-editsection-divider{color:#555}.ve-tabmessage-appendix{font-size:0.7em;vertical-align:top;line-height:1.43em;padding-left:0.5em; background-image:none !important;display:inline !important}</style><style>
+.suggestions a.mw-searchSuggest-link,.suggestions a.mw-searchSuggest-link:hover,.suggestions a.mw-searchSuggest-link:active,.suggestions a.mw-searchSuggest-link:focus{color:black;text-decoration:none}.suggestions-result-current a.mw-searchSuggest-link,.suggestions-result-current a.mw-searchSuggest-link:hover,.suggestions-result-current a.mw-searchSuggest-link:active,.suggestions-result-current a.mw-searchSuggest-link:focus{color:white}.suggestions a.mw-searchSuggest-link .special-query{ overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}</style><meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="./User_Species_PostGIS Tuning - OpenStreetMap Wiki_files/load(1).php">
+<style>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}</style>
+<script async="" src="./User_Species_PostGIS Tuning - OpenStreetMap Wiki_files/load(2).php"></script>
+<meta name="generator" content="MediaWiki 1.26.2">
+<link rel="shortcut icon" href="http://wiki.openstreetmap.org/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://wiki.openstreetmap.org/w/opensearch_desc.php" title="OpenStreetMap Wiki (en)">
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.openstreetmap.org/w/api.php?action=rsd">
+<link rel="copyright" href="http://wiki.openstreetmap.org/wiki/OpenStreetMap_License">
+<link rel="alternate" type="application/atom+xml" title="OpenStreetMap Wiki Atom feed" href="http://wiki.openstreetmap.org/w/index.php?title=Special:RecentChanges&amp;feed=atom">
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/w/skins/Vector/csshover.min.htc")}</style><![endif]-->
+<script src="./User_Species_PostGIS Tuning - OpenStreetMap Wiki_files/load(3).php"></script><style>@font-face { font-family: 'Autonym';
+	src: url('/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/Autonym/Autonym.eot?version=20131205');
+	src: local('Autonym'),		url('/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/Autonym/Autonym.woff?version=20131205') format('woff'),		url('/w/extensions/UniversalLanguageSelector/data/fontrepo/fonts/Autonym/Autonym.ttf?version=20131205') format('truetype');
+	font-style: normal;}
+</style></head>
+<body class="mediawiki ltr sitedir-ltr ns-2 ns-subject page-User_Species_PostGIS_Tuning skin-vector action-view webfonts-changed">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="en">User:Species/PostGIS Tuning</h1>
+									<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">From OpenStreetMap Wiki</div>
+								<div id="contentSub"><span class="subpages">&lt; <a href="http://wiki.openstreetmap.org/wiki/User:Species" title="User:Species">User:Species</a></span></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#mw-head">navigation</a>, 					<a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#p-search">search</a>
+				</div>
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2><span class="toctoggle">&nbsp;[<a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#" id="togglelink">hide</a>]&nbsp;</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#PostGIS_Rendering_Speed_Improvements"><span class="tocnumber">1</span> <span class="toctext">PostGIS Rendering Speed Improvements</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#Basics_on_Optimizing"><span class="tocnumber">1.1</span> <span class="toctext">Basics on Optimizing</span></a>
+<ul>
+<li class="toclevel-3 tocsection-3"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#Print_Query_Plans"><span class="tocnumber">1.1.1</span> <span class="toctext">Print Query Plans</span></a></li>
+<li class="toclevel-3 tocsection-4"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#View_results_of_queries"><span class="tocnumber">1.1.2</span> <span class="toctext">View results of queries</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-5"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#Indices"><span class="tocnumber">1.2</span> <span class="toctext">Indices</span></a>
+<ul>
+<li class="toclevel-3 tocsection-6"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#index_on_id:landuse_query"><span class="tocnumber">1.2.1</span> <span class="toctext">index on id:landuse query</span></a></li>
+<li class="toclevel-3 tocsection-7"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#building.3Dno"><span class="tocnumber">1.2.2</span> <span class="toctext">building=no</span></a></li>
+<li class="toclevel-3 tocsection-8"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#ferry_lines"><span class="tocnumber">1.2.3</span> <span class="toctext">ferry lines</span></a></li>
+<li class="toclevel-3 tocsection-9"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#single_indizes"><span class="tocnumber">1.2.4</span> <span class="toctext">single indizes</span></a></li>
+<li class="toclevel-3 tocsection-10"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#area-text"><span class="tocnumber">1.2.5</span> <span class="toctext">area-text</span></a></li>
+<li class="toclevel-3 tocsection-11"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#text-poly"><span class="tocnumber">1.2.6</span> <span class="toctext">text-poly</span></a></li>
+<li class="toclevel-3 tocsection-12"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#cutline"><span class="tocnumber">1.2.7</span> <span class="toctext">cutline</span></a></li>
+<li class="toclevel-3 tocsection-13"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#buildings-lz"><span class="tocnumber">1.2.8</span> <span class="toctext">buildings-lz</span></a></li>
+<li class="toclevel-3 tocsection-14"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#buildings"><span class="tocnumber">1.2.9</span> <span class="toctext">buildings</span></a></li>
+<li class="toclevel-3 tocsection-15"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#other"><span class="tocnumber">1.2.10</span> <span class="toctext">other</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-16"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#Appendix"><span class="tocnumber">1.3</span> <span class="toctext">Appendix</span></a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h1><span class="mw-headline" id="PostGIS_Rendering_Speed_Improvements">PostGIS Rendering Speed Improvements</span></h1>
+<p>I'm working as a freelancer for opendi AG (Munich), where I did set up a OSM Rendering-Toolchain with Mapnik/PostGIS after the Howto <a href="http://wiki.openstreetmap.org/wiki/Minutely_Mapnik" title="Minutely Mapnik">Minutely_Mapnik</a>.
+</p><p>DB is updated once a week and primarily used for generating custom sized images via generate_image.py.
+A Apache/mod_tile with Tirex is running on another machine, but not in production yet.
+</p><p>Performance after initial setup was way too slow for the machine (8 Cores, 4×256GB SSD raid0, 48G RAM).
+</p><p>So i've done some work for rendering speed tuning.
+</p><p>Postgresql settings (e.g. from Frederik's Slides):
+</p>
+<ul><li> synchronous_commit off</li>
+<li> fsync off</li>
+<li> random_page_cost 1.1 (only for SSD users)</li>
+<li> wal_buffers 16MB</li>
+<li> effective_cache_size .75xRAM</li>
+<li> maintenance_work_mem 4096</li></ul>
+<p>note: deactivate sync commits, fsync only if you do not care about your data (in my opinion, i don't - it's only a "copy" of the main DB, if a SSD crashes i have other problems - and i can reimport at any time)
+</p><p>Things i found out myself:
+</p>
+<ul><li> shared_buffers default → 12G (dont forget to increase kernel.shmmax) -5% render-time</li></ul>
+<dl><dd><dl><dd> look with e.g. top how much of reserved share memory postgres uses - this is a good hint how much is needed.</dd></dl></dd></dl>
+<ul><li> work_mem = 1MB → 1.5GB -10% render-time</li></ul>
+<dl><dd><dl><dd> this is mainly needed for big sort operations - landuses on z8 can go easily over 1G (get via explain analyze)</dd></dl></dd></dl>
+<ul><li> autovacuum = on . If your forget to reenable after import: +20% render-time.</li>
+<li> checkpoint_segments 60 → 1600 </li></ul>
+<dl><dd><dl><dd> needed through import, indexing and vacuum</dd></dl></dd></dl>
+<ul><li> effective_io_concurrency = 30 (for 4 SSDs in HW-RAID0) </li></ul>
+<dl><dd><dl><dd> no performance-increase at values&gt;30</dd></dl></dd></dl>
+<ul><li> max_connections = 300 </li></ul>
+<dl><dd><dl><dd> default 100 was too low for 8 rendering-procs</dd></dl></dd></dl>
+<p>Linux:
+</p>
+<ul><li> kernel cpufreq-governor from “ondemand” to “performance”: -50% render-time</li></ul>
+<dl><dd><dl><dd> ondemand didn't raise cpu-frequency fast enough - on my CPU 1.6→3.07 GHz, now running constantly on 3.07 GHz.</dd></dl></dd></dl>
+<h2><span class="mw-headline" id="Basics_on_Optimizing">Basics on Optimizing</span></h2>
+<p>Optimize those queries which use the most render time *absolutely*! There maybe a query which runs 150ms, but is only executed one time when rendering a tile. There maybe an other which runs 20ms, but is executed 60 times - guess which is more important to optimize ☺. You can use my script to print out a list of queries using the most time absolutely.
+</p><p>I've written a shellscript which analyzes the logged queries in the postgresql logfile, you can use it to print out
+the slowest queries: <a rel="nofollow" class="external free" href="https://github.com/species/mapnik-query-analyzer">https://github.com/species/mapnik-query-analyzer</a>
+</p><p><a href="http://wiki.openstreetmap.org/wiki/User:Vincent_De_Phily" title="User:Vincent De Phily">Vincent_De_Phily</a> suggested trying pgfouine or pgbadger also for postgresql log analyzing.
+</p><p><br>
+If you found a query, check why it runs so slow:
+</p><p>For all statements written as wiki-"code", you have to connect to your local PostgreSQL/PostGIS db:
+</p>
+<pre> # sudo -u postgres psql -d gis
+ gis=# 
+</pre>
+<p><br>
+Testing improvements after change:
+</p>
+<ol><li> clear cache (sync;echo 3 &gt; /proc/sys/vm/drop_caches)</li>
+<li> restart DB</li>
+<li> render small amount of tiles to reread indices and shapefiles</li>
+<li> clear postgresql log</li>
+<li> Render a sufficient amount of random tiles (100-1000)</li>
+<li> analyze logfiles</li></ol>
+<h3><span class="mw-headline" id="Print_Query_Plans">Print Query Plans</span></h3>
+<p>at first, print the query plan and show execution order
+</p>
+<pre>gis=# explain analyze $STATEMENT&nbsp;;
+</pre>
+<p>for $STATEMENT, copy the code of the query found in your postgresql log file (which has coordinates in it in contrast to the mapnik stylesheet).
+</p><p>example:
+</p>
+<pre>gis=# explain analyze SELECT ST_AsBinary("way") AS geom,"name","way_area" FROM (select way,way_area,name
+               from planet_osm_polygon
+               where name is not null
+                 and (waterway is null or waterway&nbsp;!= 'riverbank')
+                 and place is null
+               order by way_area desc
+              ) as text WHERE "way" &amp;&amp; ST_SetSRID('BOX3D(1171604.841520746 6470654.265434774,1172064.955953034 6470860.847424781)'::box3d, 900913);
+</pre>
+<p>it produces the following output:
+</p>
+<pre>QUERY PLAN
+----------
+Subquery Scan on text  (cost=2.65..2.66 rows=1 width=275) (actual time=43.231..90.545 rows=15 loops=1)
+  -&gt;  Sort  (cost=2.65..2.65 rows=1 width=275) (actual time=30.587..30.592 rows=15 loops=1)
+        Sort Key: planet_osm_polygon.way_area
+        Sort Method: quicksort  Memory: 27kB
+        -&gt;  Index Scan using idx_poly_name_noplace on planet_osm_polygon  (cost=0.41..2.64 rows=1 width=275) (actual time=26.222..30.529 rows=15 loops=1)
+              Index Cond: (way &amp;&amp; '010300002031BF0D00010000000500000053E76DD794E0314122E2FC90FFAE584153E76DD794E0314126353C3633AF58418A56B9F460E2314126353C3633AF58418A56B9F460E2314122E2FC90FFAE584153E76DD794E0314122E2FC90FFAE5841'::geometry)
+              Filter: ((waterway IS NULL) OR (waterway &lt;&gt; 'riverbank'::text))
+Total runtime: 90.742 ms
+(8 rows)
+</pre>
+<p>this is how the DB will solve your query. You can see which indices it uses, and how much time this needs. Use this information to invent a better index or to rewrite your queries! The output of the query will be discarded.
+</p><p>Another approach: write out the output of a query to a csv:
+</p>
+<h3><span class="mw-headline" id="View_results_of_queries">View results of queries</span></h3>
+<p>It can be useful to view the results of a query directly:
+</p>
+<pre>Copy (SELECT ST_AsBinary("way") AS geom,"name","way_area" FROM (select way,way_area,name from planet_osm_polygon
+              where name is not null
+                and (waterway is null or waterway&nbsp;!= 'riverbank')
+                and place is null
+              order by way_area desc
+             ) as text WHERE "way" &amp;&amp; ST_SetSRID('BOX3D(841288.7876000311 6472714.638467353,841748.367313656 6472920.980379593)'::box3d, 900913)
+)To '/tmp/gisq-text.csv' With CSV;
+</pre>
+<p>It creates a csv in /tmp/, look at it with your favourite editor.
+In this special case, this analysis was the key for an improvement, because the content of the file was really huge (several MB), despite being only 9 rows:
+</p><p>(first row discarded, was base64 encoded binary→the ways!)
+</p>
+<pre>France métropolitaine,1.28334e+12
+Deutschland,9.76873e+11
+Rheinland-Pfalz,4.7835e+10
+Rhein-Hunsrück-Kreis,2.33281e+09
+UNESCO Weltnaturerbe Oberes Mittelrheintal,1.85669e+09
+Emmelshausen,3.27037e+08
+Emmelshausen,1.97694e+07
+Leiningen (Hunsrück),1.39276e+07
+Schwall (Rhein-Hunsrück),3.94131e+06
+</pre>
+<p>what has the silly stylesheet done? It tried to render text labels on areas - that's okay, but we do NOT need all text labels for whole countries like France, Germany etc on a z18 Tile! The labels will be off the rendered tile in 99.99% anyway&nbsp;;-);
+The reasonable solution would be to alter the query to only render labels on areas with a maximum size a little bigger than the tile size itself and add "and way_area &lt;= 320000" somewhere in the query. For fast access an index is needed, example see in the next section.
+</p>
+<h2><span class="mw-headline" id="Indices">Indices</span></h2>
+<p>Indizes are the key for a fast serving DB!
+</p>
+<dl><dd> Downside: A lot of indices slow down updating the DB and increase DB size.</dd></dl>
+<p>In our special spatial case, every index MUST be on "USING gist (way)", only then it will be effective because it can be searched by coordinates!
+</p><p>How to check if an index is used:
+</p>
+<pre>gis=# SELECT relname, indexrelname, idx_scan, idx_tup_read, idx_tup_fetch FROM pg_stat_all_indexes WHERE
+   schemaname = 'public';
+     relname       |            indexrelname             | idx_scan | idx_tup_read | idx_tup_fetch 
+-------------------+-------------------------------------+----------+--------------+---------------
+planet_osm_polygon | water_areas_idx                     |   372544 |    121639676 |      10505232
+planet_osm_polygon | planet_osm_polygon_nobuilding_index |   124851 |      2942357 |       2942357
+planet_osm_polygon | planet_osm_polygon_pkey             |        0 |            0 |             0
+planet_osm_polygon | planet_osm_polygon_index            |  2198219 |    232523423 |     232523423
+</pre>
+<p>If any of the values goes up after a query, the index is being used.
+</p><p>the last two columns are interesting&nbsp;: idx_tup_read and idx_tup_fetch. Especially idx_tup_fetch counts how many rows are returned directly from the index without scanning the table itselt → try to get up this value!
+</p><p>you can reset the stat counter with the following command:
+</p>
+<pre>gis=# SELECT pg_stat_reset();
+</pre>
+<p><b>the usefulness of each index depends on your stylesheet!</b>
+</p><p>The following ones are developed for a only slightly modified osm-carte style.
+</p>
+<h3><span class="mw-headline" id="index_on_id:landuse_query">index on id:landuse query</span></h3>
+<p>index on the big OR'ed WHERE clause: from 73.722ms down to 3.6648ms ☺ (average)
+</p>
+<pre>CREATE INDEX idx_poly_idlanduse ON  planet_osm_polygon USING gist (way)
+       WHERE((landuse IS NOT NULL) 
+               OR (leisure IS NOT NULL) 
+               OR (aeroway = ANY ('{apron,aerodrome}'::text[])) 
+               OR (amenity = ANY ('{parking,university,college,school,hospital,kindergarten,grave_yard}'::text[])) 
+               OR (military = ANY ('{barracks,danger_area}'::text[])) 
+               OR ("natural" = ANY ('{field,beach,desert,heath,mud,grassland,wood,sand,scrub}'::text[])) 
+               OR (power = ANY ('{station,sub_station,generator}'::text[])) 
+               OR (tourism = ANY ('{attraction,camp_site,caravan_site,picnic_site,zoo}'::text[])) 
+               OR (highway = ANY ('{services,rest_area}'::text[])))
+      &nbsp;;
+</pre>
+<h3><span class="mw-headline" id="building.3Dno">building=no</span></h3>
+<p>this one can be used on many queries: -5&nbsp;% render-time
+</p>
+<pre>    CREATE INDEX "planet_osm_polygon_nobuilding_index" 
+       ON "planet_osm_polygon"
+         USING gist ("way")
+           WHERE "building" IS NULL; 
+</pre>
+<p>source: <a rel="nofollow" class="external free" href="https://github.com/gravitystorm/openstreetmap-carto/issues/207">https://github.com/gravitystorm/openstreetmap-carto/issues/207</a>
+</p>
+<h3><span class="mw-headline" id="ferry_lines">ferry lines</span></h3>
+<p>decreases render-time by 2% 
+</p>
+<pre>CREATE INDEX ferry_idx ON planet_osm_line USING gist (way)
+       WHERE (route = 'ferry'::text);
+</pre>
+<p><a rel="nofollow" class="external free" href="https://github.com/gravitystorm/openstreetmap-carto/issues/207">https://github.com/gravitystorm/openstreetmap-carto/issues/207</a>
+</p>
+<h3><span class="mw-headline" id="single_indizes">single indizes</span></h3>
+<p>The "sledgehammer approach": Index everything simple:
+</p><p>for all columns and table do (i've used a shellscript to generate all the index statements):
+</p>
+<pre>CREATE INDEX "idx_poly_aeroway" on planet_osm_polygon  USING gist (way) WHERE "aeroway" IS NOT NULL&nbsp;;
+</pre>
+<p>After having added ~50 simple indices on planet_osm_line,planet_osm_polygon,planet_osm_point, render some stuff, check the used ones and remove the others.: -8% render-time
+</p><p>The following ones remained:
+</p>
+<pre>CREATE INDEX "idx_poly_aeroway" on planet_osm_polygon  USING gist (way) WHERE "aeroway" IS NOT NULL&nbsp;;
+CREATE INDEX "idx_poly_historic" on planet_osm_polygon  USING gist (way) WHERE "historic" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_leisure" on planet_osm_polygon  USING gist (way) WHERE "leisure" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_man_made" on planet_osm_polygon  USING gist (way) WHERE "man_made" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_military" on planet_osm_polygon  USING gist (way) WHERE "military" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_power" on planet_osm_polygon  USING gist (way) WHERE "power" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_landuse" on planet_osm_polygon  USING gist (way) WHERE "landuse" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_amenity" on planet_osm_polygon  USING gist (way) WHERE "amenity" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_natural" on planet_osm_polygon  USING gist (way) WHERE "natural" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_highway" on planet_osm_polygon  USING gist (way) WHERE "highway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_tourism" on planet_osm_polygon  USING gist (way) WHERE "tourism" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_building" on planet_osm_polygon  USING gist (way) WHERE "building" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_barrier" on planet_osm_polygon  USING gist (way) WHERE "barrier" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_railway" on planet_osm_polygon  USING gist (way) WHERE "railway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_aerialway" on planet_osm_polygon  USING gist (way) WHERE "aerialway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_power_source" on planet_osm_polygon  USING gist (way) WHERE "power_source" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_poly_generator:source" on planet_osm_polygon  USING gist (way) WHERE "generator:source" IS NOT NULL&nbsp;;
+</pre>
+<pre>CREATE INDEX "idx_line_aerialway" on planet_osm_line  USING gist (way) WHERE "aerialway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_line_waterway" on planet_osm_line  USING gist (way) WHERE "waterway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_line_bridge" on planet_osm_line  USING gist (way) WHERE "bridge" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_line_tunnel" on planet_osm_line  USING gist (way) WHERE "tunnel" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_line_access" on planet_osm_line  USING gist (way) WHERE "access" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_line_railway" on planet_osm_line  USING gist (way) WHERE "railway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_line_power" on planet_osm_line  USING gist (way) WHERE "power" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_line_name" on planet_osm_line  USING gist (way) WHERE "name" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_line_ref" on planet_osm_line  USING gist (way) WHERE "ref" IS NOT NULL&nbsp;;
+</pre>
+<pre>CREATE INDEX "idx_point_aerialway" on planet_osm_point  USING gist (way) WHERE "aerialway" IS NOT NULL&nbsp;;  
+CREATE INDEX "idx_point_power_source" on planet_osm_point  USING gist (way) WHERE "power_source" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_shop" on planet_osm_point  USING gist (way) WHERE "shop" IS NOT NULL&nbsp;;  
+CREATE INDEX "idx_point_place" on planet_osm_point  USING gist (way) WHERE "place" IS NOT NULL&nbsp;;  
+CREATE INDEX "idx_point_barrier" on planet_osm_point  USING gist (way) WHERE "barrier" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_railway" on planet_osm_point  USING gist (way) WHERE "railway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_amenity" on planet_osm_point  USING gist (way) WHERE "amenity" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_natural" on planet_osm_point  USING gist (way) WHERE "natural" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_highway" on planet_osm_point  USING gist (way) WHERE "highway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_tourism" on planet_osm_point  USING gist (way) WHERE "tourism" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_power" on planet_osm_point  USING gist (way) WHERE "power" IS NOT NULL&nbsp;;  
+CREATE INDEX "idx_point_aeroway" on planet_osm_point  USING gist (way) WHERE "aeroway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_historic" on planet_osm_point  USING gist (way) WHERE "historic" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_leisure" on planet_osm_point  USING gist (way) WHERE "leisure" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_man_made" on planet_osm_point  USING gist (way) WHERE "man_made" IS NOT NULL&nbsp;;  
+CREATE INDEX "idx_point_waterway" on planet_osm_point  USING gist (way) WHERE "waterway" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_generator:source" on planet_osm_point  USING gist (way) WHERE "generator:source" IS NOT NULL&nbsp;;
+CREATE INDEX "idx_point_capital" on planet_osm_point  USING gist (way) WHERE "capital" IS NOT NULL&nbsp;;  
+CREATE INDEX "idx_point_lock" on planet_osm_point  USING gist (way) WHERE "lock" IS NOT NULL&nbsp;;  
+CREATE INDEX "idx_point_landuse" on planet_osm_point  USING gist (way) WHERE "landuse" IS NOT NULL&nbsp;; 
+CREATE INDEX "idx_point_military" on planet_osm_point  USING gist (way) WHERE "military" IS NOT NULL&nbsp;;
+</pre>
+<h3><span class="mw-headline" id="area-text">area-text</span></h3>
+<p>The famous example from above where optimizing really excels: down from ~497ms to 0.68 ms ☺
+</p><p>The query has been altered to include way_area &lt;= 320000 (i've done it globally since i only need zoomlevels &gt; 15 atm)
+</p><p>the following index must be used for this to work:
+</p>
+<pre>CREATE INDEX idx_poly_wayarea_text ON  planet_osm_polygon USING gist (way)
+     WHERE name IS NOT NULL
+     AND place IS NULL
+     AND way_area &lt;= 320000;
+</pre>
+<h3><span class="mw-headline" id="text-poly">text-poly</span></h3>
+<p>Adding the following index for id: text-poly brought it down from 61.211ms down to 16.704ms per render-request.
+</p><p>This is an example where reducing a query for 5ms actually improves performance noticeably, because it runs ten times while rendering a single request.
+</p>
+<pre>CREATE INDEX idx_poly_text_poly ON planet_osm_polygon USING gist (way)
+       where amenity is not null
+                 or shop in ('supermarket','bakery','clothes','fashion','convenience','doityourself','hairdresser','department_store', 'butcher','car','car_repair','bicycle')
+                 or leisure is not null
+                 or landuse is not null
+                 or tourism is not null
+                 or "natural" is not null
+                 or man_made in ('lighthouse','windmill')
+                 or place='island'
+                 or military='danger_area'
+                 or historic in ('memorial','archaeological_site')
+                 or highway='bus_stop';
+</pre>
+<h3><span class="mw-headline" id="cutline">cutline</span></h3>
+<p>there are very few <a href="http://wiki.openstreetmap.org/wiki/Tag:man_made%3Dcutline" title="Tag:man made=cutline">tag:man_made=cutline</a>, so an index can improve results dramatically (for a small test from 37.601ms to 0.12007ms)
+</p>
+<pre>CREATE INDEX "idx_line_cutline" on planet_osm_line  USING gist (way)
+       where man_made='cutline';
+</pre>
+<p><br>
+</p>
+<h3><span class="mw-headline" id="buildings-lz">buildings-lz</span></h3>
+<p>reduced average query speed for one tile from 47.240ms down to 0.49313ms with this index:
+</p>
+<pre>CREATE INDEX idx_poly_buildings_lz ON planet_osm_polygon USING gist (way)
+       where railway='station'
+         or building in ('station','supermarket')
+         or amenity='place_of_worship';
+</pre>
+<h3><span class="mw-headline" id="buildings">buildings</span></h3>
+<p>this index takes longer to build, but improves query time from 18.532ms to 1.0745ms
+</p>
+<pre>CREATE INDEX idx_poly_buildings ON planet_osm_polygon USING gist (way)
+       where (building is not null
+                and building not in ('no','station','supermarket','planned')
+                and (railway is null or railway&nbsp;!= 'station')
+                and (amenity is null or amenity&nbsp;!= 'place_of_worship'))
+                 or aeroway = 'terminal';
+</pre>
+<h3><span class="mw-headline" id="other">other</span></h3>
+<p>some other examples i found on the Internet (used, but not speed-tested yet):
+</p>
+<pre>CREATE INDEX water_areas_idx ON planet_osm_polygon USING gist (way)
+       WHERE (((waterway IS NOT NULL)
+       OR (landuse = ANY (ARRAY['reservoir'::text, 'water'::text, 'basin'::text])))
+       OR ("natural" IS NOT NULL));
+</pre>
+<h2><span class="mw-headline" id="Appendix">Appendix</span></h2>
+<p>If you find this page useful, please link it on appropriate pages in this Wiki or elsewhere.
+</p><p>If you have other hints for speed-improving, expand this article it or provide links here:
+</p><p>Links:
+</p>
+<ul><li> <a rel="nofollow" class="external free" href="http://www.postgresql.org/docs/9.3/static/monitoring-stats.html#PG-STAT-ALL-INDEXES-VIEW">http://www.postgresql.org/docs/9.3/static/monitoring-stats.html#PG-STAT-ALL-INDEXES-VIEW</a></li>
+<li> <a rel="nofollow" class="external free" href="https://github.com/gravitystorm/openstreetmap-carto/issues/207">https://github.com/gravitystorm/openstreetmap-carto/issues/207</a>
+<ul><li> <a rel="nofollow" class="external free" href="https://github.com/gravitystorm/openstreetmap-carto/issues/16">https://github.com/gravitystorm/openstreetmap-carto/issues/16</a></li></ul></li></ul>
+
+<!-- 
+NewPP limit report
+Cached time: 20160222205420
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.028 seconds
+Real time usage: 0.029 seconds
+Preprocessor visited node count: 62/1000000
+Preprocessor generated node count: 68/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+-->
+
+<!-- 
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 - -total
+-->
+
+<!-- Saved in parser cache with key wiki:pcache:idhash:119639-0!*!0!!en!*!* and timestamp 20160222205420 and revision id 988050
+ -->
+</div>					<div class="printfooter">
+						Retrieved from "<a dir="ltr" href="http://wiki.openstreetmap.org/w/index.php?title=User:Species/PostGIS_Tuning&amp;oldid=988050">http://wiki.openstreetmap.org/w/index.php?title=User:Species/PostGIS_Tuning&amp;oldid=988050</a>"					</div>
+				<div id="catlinks" class="catlinks catlinks-allhidden"></div>				<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Navigation menu</h2>
+
+			<div id="mw-head">
+									<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+						<h3 id="p-personal-label">Personal tools</h3>
+						<ul>
+							<li id="pt-uls" class="active"><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#" class="uls-trigger autonym" tabindex="0" role="button" aria-haspopup="true" original-title="">English</a></li><li id="pt-createaccount"><a href="http://wiki.openstreetmap.org/w/index.php?title=Special:UserLogin&amp;returnto=User%3ASpecies%2FPostGIS+Tuning&amp;type=signup" title="You are encouraged to create an account and log in; however, it is not mandatory">Create account</a></li><li id="pt-login"><a href="http://wiki.openstreetmap.org/w/index.php?title=Special:UserLogin&amp;returnto=User%3ASpecies%2FPostGIS+Tuning" title="You are encouraged to log in; however, it is not mandatory [alt-shift-o]" accesskey="o">Log in</a></li>						</ul>
+					</div>
+									<div id="left-navigation">
+										<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+						<h3 id="p-namespaces-label">Namespaces</h3>
+						<ul>
+															<li id="ca-nstab-user" class="selected"><span><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning" title="View the user page [alt-shift-c]" accesskey="c">User page</a></span></li>
+															<li id="ca-talk"><span><a href="http://wiki.openstreetmap.org/wiki/User_talk:Species/PostGIS_Tuning" title="Discussion about the content page [alt-shift-t]" accesskey="t" rel="discussion">Discussion</a></span></li>
+													</ul>
+					</div>
+										<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+												<h3 id="p-variants-label" tabindex="0">
+							<span>Variants</span><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#" tabindex="-1"></a>
+						</h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+									</div>
+				<div id="right-navigation">
+										<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+						<h3 id="p-views-label">Views</h3>
+						<ul>
+															<li id="ca-view" class="selected"><span><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning">Read</a></span></li>
+															<li id="ca-viewsource"><span><a href="http://wiki.openstreetmap.org/w/index.php?title=User:Species/PostGIS_Tuning&amp;action=edit" title="This page is protected.
+You can view its source [alt-shift-e]" accesskey="e">View source</a></span></li>
+															<li id="ca-history" class="collapsible"><span><a href="http://wiki.openstreetmap.org/w/index.php?title=User:Species/PostGIS_Tuning&amp;action=history" title="Past revisions of this page [alt-shift-h]" accesskey="h">View history</a></span></li>
+													</ul>
+					</div>
+										<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+						<h3 id="p-cactions-label" tabindex="0"><span>More</span><a href="http://wiki.openstreetmap.org/wiki/User:Species/PostGIS_Tuning#" tabindex="-1"></a></h3>
+
+						<div class="menu">
+							<ul>
+															</ul>
+						</div>
+					</div>
+										<div id="p-search" role="search">
+						<h3>
+							<label for="searchInput">Search</label>
+						</h3>
+
+						<form action="http://wiki.openstreetmap.org/w/index.php" id="searchform">
+							<div id="simpleSearch">
+							<input type="search" name="search" placeholder="Search" title="Search OpenStreetMap Wiki [alt-shift-f]" accesskey="f" id="searchInput" tabindex="1" autocomplete="off" class="webfonts-changed"><input type="hidden" value="Special:Search" name="title" class="webfonts-changed"><input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton webfonts-changed">							</div>
+						</form>
+					</div>
+									</div>
+			</div>
+			<div id="mw-panel">
+				<div id="p-logo" role="banner"><a class="mw-wiki-logo" href="http://wiki.openstreetmap.org/wiki/Main_Page" title="Visit the main page"></a></div>
+						<div class="portal" role="navigation" id="p-site" aria-labelledby="p-site-label">
+			<h3 id="p-site-label">site</h3>
+
+			<div class="body">
+									<ul>
+						<li id="n-mainpage"><a href="http://wiki.openstreetmap.org/wiki/Main_Page" title="Visit the main page [alt-shift-z]" accesskey="z">Main Page</a></li><li id="n-map"><a href="http://www.openstreetmap.org/">The map</a></li><li id="n-mapfeatures"><a href="http://wiki.openstreetmap.org/wiki/Map_Features">Map Features</a></li><li id="n-contributors"><a href="http://wiki.openstreetmap.org/wiki/Contributors">Contributors</a></li><li id="n-help"><a href="http://wiki.openstreetmap.org/wiki/Help:Contents" title="The place to find out">Help</a></li><li id="n-blogs"><a href="http://wiki.openstreetmap.org/wiki/OSM_Blogs">Blogs</a></li><li id="n-Shop"><a href="http://wiki.openstreetmap.org/wiki/Merchandise">Shop</a></li><li id="n-sitesupport"><a href="http://wiki.openstreetmap.org/wiki/Donations">Donations</a></li><li id="n-recentchanges"><a href="http://wiki.openstreetmap.org/wiki/Special:RecentChanges" title="A list of recent changes in the wiki [alt-shift-r]" accesskey="r">Recent changes</a></li>					</ul>
+							</div>
+		</div>
+			<div class="portal" role="navigation" id="p-tb" aria-labelledby="p-tb-label">
+			<h3 id="p-tb-label">Tools</h3>
+
+			<div class="body">
+									<ul>
+						<li id="t-whatlinkshere"><a href="http://wiki.openstreetmap.org/wiki/Special:WhatLinksHere/User:Species/PostGIS_Tuning" title="A list of all wiki pages that link here [alt-shift-j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="http://wiki.openstreetmap.org/wiki/Special:RecentChangesLinked/User:Species/PostGIS_Tuning" title="Recent changes in pages linked from this page [alt-shift-k]" accesskey="k">Related changes</a></li><li id="t-contributions"><a href="http://wiki.openstreetmap.org/wiki/Special:Contributions/Species" title="A list of contributions by this user">User contributions</a></li><li id="t-log"><a href="http://wiki.openstreetmap.org/wiki/Special:Log/Species">Logs</a></li><li id="t-specialpages"><a href="http://wiki.openstreetmap.org/wiki/Special:SpecialPages" title="A list of all special pages [alt-shift-q]" accesskey="q">Special pages</a></li><li id="t-print"><a href="http://wiki.openstreetmap.org/w/index.php?title=User:Species/PostGIS_Tuning&amp;printable=yes" rel="alternate" title="Printable version of this page [alt-shift-p]" accesskey="p">Printable version</a></li><li id="t-permalink"><a href="http://wiki.openstreetmap.org/w/index.php?title=User:Species/PostGIS_Tuning&amp;oldid=988050" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="http://wiki.openstreetmap.org/w/index.php?title=User:Species/PostGIS_Tuning&amp;action=info" title="More information about this page">Page information</a></li>					</ul>
+							</div>
+		</div>
+				</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 8 February 2014, at 00:17.</li>
+											<li id="footer-info-copyright">Content is available under <a href="http://wiki.openstreetmap.org/wiki/OpenStreetMap_License" title="OpenStreetMap License">Creative Commons Attribution-ShareAlike 2.0 license</a> unless otherwise noted.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="http://wiki.openstreetmap.org/wiki/Privacy_Policy" title="Privacy Policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="http://wiki.openstreetmap.org/wiki/About" title="About">About OpenStreetMap Wiki</a></li>
+											<li id="footer-places-disclaimer"><a href="http://wiki.openstreetmap.org/wiki/OpenStreetMap:General_disclaimer" title="OpenStreetMap:General disclaimer">Disclaimers</a></li>
+											<li id="footer-places-mobileview"><a href="http://wiki.openstreetmap.org/w/index.php?title=User:Species/PostGIS_Tuning&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+											<li id="footer-copyrightico">
+							<a href="http://creativecommons.org/licenses/by-sa/2.0/"><img src="./User_Species_PostGIS Tuning - OpenStreetMap Wiki_files/cc-wiki.png" alt="Creative Commons Attribution-ShareAlike 2.0 license" width="88" height="31"></a>						</li>
+											<li id="footer-poweredbyico">
+							<a href="http://www.mediawiki.org/"><img src="./User_Species_PostGIS Tuning - OpenStreetMap Wiki_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/w/resources/assets/poweredby_mediawiki_132x47.png 1.5x, /w/resources/assets/poweredby_mediawiki_176x62.png 2x" width="88" height="31"></a>						</li>
+									</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>window.RLQ = window.RLQ || []; window.RLQ.push( function () {
+mw.loader.state({"user":"ready","user.groups":"ready"});mw.loader.load(["mediawiki.toc","mediawiki.action.view.postEdit","site","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.searchSuggest","ext.visualEditor.targetLoader","ext.uls.pt"]);
+} );</script>
+<script src="./User_Species_PostGIS Tuning - OpenStreetMap Wiki_files/geoiplookup"></script>
+<script>window.RLQ = window.RLQ || []; window.RLQ.push( function () {
+mw.config.set({"wgBackendResponseTime":126});
+} );</script>
+	
+
+<div class="suggestions" style="display: none; font-size: 13px;"><div class="suggestions-results"></div><div class="suggestions-special"></div></div></body></html>
