@@ -137,7 +137,7 @@ sudo chown [username] /var/lib/mod_tile</code></pre>
 
 #### Configure mod_tile
 Next, we need to tell the Apache web server about our new mod_tile installation.
-Using your favourite text editor, create the file /etc/apache2/conf-available/mod_tile.conf and add one line:
+Using your favourite text editor, create the file /etc/apache2/conf-available/mod_tile.conf and add:
 <pre><code># This is the Apache server configuration file for providing OSM tile support
 # through mod_tile
 
