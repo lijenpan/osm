@@ -1,23 +1,39 @@
-# Preparations
-<pre><code>sudo yum -y install bzip2-devel libpng-devel libtiff-devel zlib-devel libjpeg-devel libxml2-devel python-setuptools proj-devel proj proj-epsg proj-nad freetype-devel freetype libicu-devel libicu gdal-devel gdal sqlite-devel sqlite libcurl-devel libcurl cairo-devel cairo pycairo-devel pycairo geos geos-devel protobuf-devel protobuf-c-devel lua-devel cmake proj boost boost-thread proj-devel</code></pre>
+# Preparations (Using CentOS 7 Minimal)
+<pre><code>sudo yum -y install autoconf automake httpd-devel devtoolset-7-gcc* harfbuzz-devel libwebp-devel harfbuzz centos-release-scl git gcc gcc-c++ bzip2 bzip2-devel libpng-devel libtiff-devel zlib-devel libjpeg-devel libxml2-devel python-setuptools proj-devel proj proj-epsg proj-nad freetype-devel freetype libicu-devel libicu gdal-devel gdal sqlite-devel sqlite libcurl-devel libcurl cairo-devel cairo pycairo-devel pycairo geos geos-devel protobuf-devel protobuf-c-devel lua-devel cmake proj boost boost-thread proj-devel</code></pre>
+
+# Update GCC to 7.x.x
+<pre><code>
+scl enable devtoolset-7 bash
+</pre></code>
+
+# Install PostgreSQL Repo
+<code>rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm</code>
 
 # Install PostgreSQL Server and PostGIS
-<code>sudo yum install -y postgresql94-server postgis2_94 postgis2_94-docs postgis2_94-utils pgrouting_94</code>
+<code>sudo yum install -y postgresql94-server postgis24_94 postgis24_94-docs postgis24_94-utils pgrouting_94</code>
 
 ## Initialize Postgresql DB
-<pre><code>service postgresql-9.4 initdb
+<pre><code>/usr/pgsql-9.4/bin/postgresql94-setup initdb
 # Create DB: gis</code></pre>
 
 ## Start Postgresql Server
 <pre><code>chkconfig postgresql-9.4 on
 service postgresql-9.4 start</code></pre>
 
+# Install Mapnik Dependencies
+<pre><code>
+sudo yum -y install make gcc47 gcc-c++ bzip2-devel libpng-devel libtiff-devel zlib-devel libjpeg-devel libxml2-devel python-setuptools git-all python-nose python-devel python proj-devel proj proj-epsg proj-nad freetype-devel freetype libicu-devel libicu git bzip2
+
+sudo yum -y install gdal-devel gdal postgresql-devel sqlite-devel sqlite libcurl-devel libcurl cairo-devel cairo pycairo-devel pycairo postgresql93 postgresql93-server postgresql93-libs postgresql93-contrib postgresql93-devel postgis2_93 vim
+
+</pre></code>
+
 # Build and Install Mapnik
 ## Boost C++ Libraries
 <pre><code>JOBS=`grep -c ^processor /proc/cpuinfo`
-wget http://downloads.sourceforge.net/boost/boost_1_59_0.tar.bz2
-tar xf boost_1_59_0.tar.bz2
-cd boost_1_59_0
+wget http://downloads.sourceforge.net/boost/boost_1_66_0.tar.bz2
+tar xjf boost_1_66_0.tar.bz2
+cd boost_1_66_0
 ./bootstrap.sh
 ./b2 -d1 -j${JOBS} \
     --with-thread \
@@ -52,8 +68,10 @@ Add pg_config to the PATH:
 <code>export PATH=$PATH:/usr/pgsql-9.4/bin</code>
 
 ### Clone, Build, and Install Mapnik 2.3.x
-<pre><code>git clone git://github.com/mapnik/mapnik
-cd maplink
+<pre><code>
+git clone https://github.com/mapnik/mapnik.git
+git submodule update --init
+cd mapnink
 ./configure
 make && sudo make install</code></pre>
 
@@ -80,20 +98,21 @@ export PATH=$PATH:/usr/local/bin</code></pre>
 
 # Install mod_tile and renderd
 Compile the mod_tile source code:
-<pre><code>git clone git://github.com/openstreetmap/osm2pgsql.git
-cd osm2pgsql
-mkdir build && cd build && cmake ..
-make
-sudo make install
-export PATH=$PATH:/usr/local/bin</code></pre>
-git clone git://github.com/openstreetmap/mod_tile.git
+<pre><code>git clone https://github.com/openstreetmap/mod_tile.git
 cd mod_tile
 ./autogen.sh
 ./configure
+
+# Copy Mapnick libraries to /usr/include/mapnik
+cp -rf ../mapnik/include/mapnik/* /usr/include/mapnik
+cp ../mapnik/include/mapnik/geometry/box2d.hpp /usr/include/mapnik
+
 make
 sudo make install
 sudo make install-mod_tile
-sudo ldconfig</code></pre>
+sudo ldconfig
+</code></pre>
+
 
 # Stylesheet configuration
 To begin with, we need to download both the OSM Bright stylesheet, and also the additional data resources it uses (for coastlines and the like).
