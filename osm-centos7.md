@@ -10,7 +10,7 @@ scl enable devtoolset-7 bash
 <code>rpm -Uvh https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm</code>
 
 # Install PostgreSQL Server and PostGIS
-<code>sudo yum install -y postgresql94-server postgis24_94 postgis24_94-docs postgis24_94-utils pgrouting_94</code>
+<code>sudo yum install -y postgresql94-server postgis22_94 postgis22_94-docs postgis22_94-utils pgrouting_94</code>
 
 ## Initialize Postgresql DB
 <pre><code>/usr/pgsql-9.4/bin/postgresql94-setup initdb
@@ -176,7 +176,7 @@ Next we need to plug renderd and mod_tile into the Apache webserver, ready to re
 Change the the renderd settings by editing the /etc/renderd.conf and change the following five lines, uncommenting (removing the ‘;’) when required. They are found in the [renderd], [mapnik] and [default] sections.
 <pre><code>socketname=/var/run/renderd/renderd.sock
 plugins_dir=/usr/local/lib/mapnik/input
-font_dir=/usr/share/fonts/truetype/ttf-dejavu
+font_dir=/usr/share/fonts/dejavu
 XML=/usr/local/share/maps/style/OSMBright/OSMBright.xml
 HOST=localhost</code></pre>
 
@@ -357,8 +357,8 @@ and verify that it displays as 268435456.
 <pre><code>useradd -c "OpenStreetMap System User" -m osm
 su - postgres
 export PATH=$PATH:/usr/pgsql-9.4/bin
-psql gis < /usr/pgsql-9.4/share/contrib/postgis-2.1/postgis.sql
-psql gis < /usr/pgsql-9.4/share/contrib/postgis-2.1/spatial_ref_sys.sql
+psql gis < /usr/pgsql-9.4/share/contrib/postgis-2.2/postgis.sql
+psql gis < /usr/pgsql-9.4/share/contrib/postgis-2.2/spatial_ref_sys.sql
 createuser osm -W # No to all questions
 createuser apache -W # No to all questions
 echo "grant all on geometry_columns to apache;" | psql gis
@@ -379,7 +379,7 @@ Since the whole planet is at least 18GB when compressed, there are links to smal
 With the conversion tool compiled and the database prepared, the following command will insert the OpenStreetMap data you downloaded earlier into the database. This step is very disk I/O intensive; the full planet will take anywhere from 10 hours on a fast server with SSDs to several days depending on the speed of the computer performing the import. For smaller extracts the import time is much faster accordingly, and you may need to experiment with different -C values to fit within your machine’s available memory.
 
 You will need to run this command as a known Postgres user.
-<pre><code>osm2pgsql --slim -d gis -C 1600 --number-process 3 -S /usr/local/share/osm2pgsql/default.style planet -latest.osm.pbf</code></pre>
+<pre><code>osm2pgsql --slim -d gis -C 1600 --number-process 3 -S /usr/local/share/osm2pgsql/default.style planet-latest.osm.pbf</code></pre>
 
 You will see status report as it imports map tiles.
 <pre><code>osm2pgsql SVN version 0.89.0-dev (64 bit id space)
